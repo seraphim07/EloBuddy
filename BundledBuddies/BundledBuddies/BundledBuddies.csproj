@@ -69,6 +69,7 @@
     <Compile Include="Bundles\Annie\MenuManager.cs" />
     <Compile Include="Bundles\Annie\SpellManager.cs" />
     <Compile Include="Bundles\BundledBase.cs" />
+    <Compile Include="Bundles\MenuManagerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
