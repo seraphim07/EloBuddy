@@ -32,15 +32,13 @@ namespace BundledBuddies.Bundles
             if (menuManager.IsAutoSkillEnabled && sender.Equals(Player.Instance))
             {
                 Spellbook spellbook = Player.Instance.Spellbook;
-                spellbook.LevelSpell(SpellSlot.R);
-                spellbook.LevelSpell(menuManager.FirstPrioritySkill);
-                spellbook.LevelSpell(menuManager.SecondPrioritySkill);
-
-                foreach (SpellSlot s in new SpellSlot[] { SpellSlot.Q, SpellSlot.W, SpellSlot.E })
+                SpellSlot[] spells = new SpellSlot[] { SpellSlot.R, menuManager.FirstPrioritySkill, menuManager.SecondPrioritySkill, menuManager.ThirdPrioritySkill };
+                
+                for (int i = 0; i < spells.Length; i++)
                 {
-                    if (!s.Equals(menuManager.FirstPrioritySkill) && !s.Equals(menuManager.SecondPrioritySkill))
+                    while (spellbook.GetSpell(spells[i]).IsUpgradable)
                     {
-                        spellbook.LevelSpell(s);
+                        spellbook.LevelSpell(spells[i]);
                     }
                 }
             }

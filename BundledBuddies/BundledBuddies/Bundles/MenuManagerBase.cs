@@ -39,10 +39,10 @@ namespace BundledBuddies.Bundles
             Misc = Main.AddSubMenu("Misc", "misc");
             Misc.Add("misc_auto_skill_enable", new CheckBox("Enable auto skill levelup", true));
             ComboBox MiscAutoSkillPriority1 = Misc.Add("misc_auto_skill_priority_1", new ComboBox("Auto skill level up priority 1", 0, "Q", "W", "E"));
-            MiscAutoSkillPriority1.OnValueChange += OnValueChange;
             ComboBox MiscAutoSkillPriority2 = Misc.Add("misc_auto_skill_priority_2", new ComboBox("Auto skill level up priority 2", 1, "Q", "W", "E"));
-            MiscAutoSkillPriority2.OnValueChange += OnValueChange;
             ComboBox MiscAutoSkillPriority3 = Misc.Add("misc_auto_skill_priority_3", new ComboBox("Auto skill level up priority 3", 2, "Q", "W", "E"));
+            MiscAutoSkillPriority1.OnValueChange += OnValueChange;
+            MiscAutoSkillPriority2.OnValueChange += OnValueChange;
             MiscAutoSkillPriority3.OnValueChange += OnValueChange;
             Misc.Add("misc_use_qss", new CheckBox("Use Quick Silver Sash", true));
             Misc.Add("misc_use_ms", new CheckBox("Use Mercurial Scimitar", true));
@@ -115,6 +115,22 @@ namespace BundledBuddies.Bundles
             get
             {
                 switch ((Misc["misc_auto_skill_priority_2"] as ComboBox).CurrentValue)
+                {
+                    case 0:
+                        return SpellSlot.Q;
+                    case 1:
+                        return SpellSlot.W;
+                    default:
+                        return SpellSlot.E;
+                }
+            }
+        }
+
+        public SpellSlot ThirdPrioritySkill
+        {
+            get
+            {
+                switch ((Misc["misc_auto_skill_priority_3"] as ComboBox).CurrentValue)
                 {
                     case 0:
                         return SpellSlot.Q;
