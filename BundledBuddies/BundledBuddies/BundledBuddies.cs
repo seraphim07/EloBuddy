@@ -31,7 +31,6 @@ namespace BundledBuddies
                 case Champion.Anivia:
                     break;
                 case Champion.Annie:
-                    Chat.Print("TEST");
                     new BundledAnnie();
                     break;
             }
