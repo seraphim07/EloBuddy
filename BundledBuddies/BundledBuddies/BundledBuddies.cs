@@ -16,7 +16,6 @@ namespace BundledBuddies
 
         private static void OnLoadingComplete(EventArgs e)
         {
-            Chat.Print("TEST");
             switch (Player.Instance.Hero)
             {
                 case Champion.Aatrox:
@@ -32,6 +31,7 @@ namespace BundledBuddies
                 case Champion.Anivia:
                     break;
                 case Champion.Annie:
+                    Chat.Print("TEST");
                     new BundledAnnie();
                     break;
             }
