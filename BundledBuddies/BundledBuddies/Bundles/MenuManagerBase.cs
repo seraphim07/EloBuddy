@@ -54,6 +54,9 @@ namespace BundledBuddies.Bundles
             if (Player.Instance.GetSpellSlotFromName("summonerheal") != SpellSlot.Unknown)
             {
                 Misc.Add("misc_use_heal", new CheckBox("Use Heal", true));
+                Misc.Add("misc_use_heal_combo", new CheckBox("Use Heal during Combo mode", true));
+                Misc.Add("misc_use_heal_harass", new CheckBox("Use Heal during Harass mode", false));
+                Misc.Add("misc_use_heal_flee", new CheckBox("Use Heal during Flee mode", true));
                 Misc.Add("misc_use_heal_hp", new Slider("Use Heal when <= hp %", 25, 0, 100));
                 Misc.Add("misc_use_heal_ally", new CheckBox("Use Heal to save ally", true));
                 Misc.Add("misc_use_heal_ally_hp", new Slider("Use Heal when <= ally's hp %", 25, 0, 100));
@@ -62,6 +65,9 @@ namespace BundledBuddies.Bundles
             if (Player.Instance.GetSpellSlotFromName("summonerbarrier") != SpellSlot.Unknown)
             {
                 Misc.Add("misc_use_barrier", new CheckBox("Use Barrier", true));
+                Misc.Add("misc_use_barrier_combo", new CheckBox("Use Barrier during Combo mode", true));
+                Misc.Add("misc_use_barrier_harass", new CheckBox("Use Barrier during Harass mode", false));
+                Misc.Add("misc_use_barrier_flee", new CheckBox("Use Barrier during Flee mode", true));
                 Misc.Add("misc_use_barrier_hp", new Slider("Use Barrier when <= hp %", 25, 0, 100));
             }
 

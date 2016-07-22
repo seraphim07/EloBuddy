@@ -22,19 +22,21 @@ namespace BundledBuddies.Bundles
 
         protected void Initialize()
         {
-            Drawing.OnDraw += OnDraw;
             Game.OnTick += OnTick;
-            Orbwalker.OnPostAttack += OnPostAttack;
-            Messages.OnMessage += OnMessage;
-            Obj_AI_Base.OnLevelUp += OnLevelUp;
         }
 
         private void OnTick(EventArgs e)
         {
+            UseItems();
+
+            UseSpells();
+
             OnTickPermaActive();
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
             {
+                UseOffensiveItems();
+
                 OnTickCombo();
             }
             
@@ -72,9 +74,24 @@ namespace BundledBuddies.Bundles
         protected virtual void OnTickLastHit() { }
         protected virtual void OnTickFlee() { }
 
-        protected virtual void OnDraw(EventArgs e) { }
-        protected virtual void OnPostAttack(AttackableUnit target, EventArgs e) { }
-        protected virtual void OnMessage(Messages.WindowMessage message) { }
-        protected virtual void OnLevelUp(Obj_AI_Base sender, Obj_AI_BaseLevelUpEventArgs e) { }
+        private void UseDefensiveItems()
+        {
+
+            Misc.Add("misc_use_qss", new CheckBox("Use Quick Silver Sash", true));
+            Misc.Add("misc_use_ms", new CheckBox("Use Mercurial Scimitar", true));
+            Misc.Add("misc_use_potion", new CheckBox("Use Potions", true));
+            Misc.Add("misc_use_potion_hp", new Slider("Use potion when <= hp %", 25, 0, 100));
+        }
+
+        private void UseOffensiveItems()
+        {
+            Misc.Add("misc_use_bc", new CheckBox("Use Bilgewater Cutlass", true));
+            Misc.Add("misc_use_botrk", new CheckBox("Use Blade of the Ruined King", true));
+        }
+
+        private void UseSpells()
+        {
+
+        }
     }
 }

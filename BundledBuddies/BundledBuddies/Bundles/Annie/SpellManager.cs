@@ -5,14 +5,14 @@ using System;
 
 namespace BundledBuddies.Bundles.Annie
 {
-    class SpellManager
+    class SpellManager : SpellManagerBase
     {
         public Spell.Targeted Q;
         public Spell.Skillshot W;
         public Spell.Active E;
         public Spell.Skillshot R;
 
-        public SpellManager()
+        public SpellManager() : base()
         {
             SpellDataInst QData = Player.Instance.Spellbook.GetSpell(SpellSlot.Q);
             Q = new Spell.Targeted(SpellSlot.Q, Convert.ToUInt32(QData.SData.CastRange));

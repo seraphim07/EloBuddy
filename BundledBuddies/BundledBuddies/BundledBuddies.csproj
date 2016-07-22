@@ -70,6 +70,7 @@
     <Compile Include="Bundles\Annie\SpellManager.cs" />
     <Compile Include="Bundles\BundledBase.cs" />
     <Compile Include="Bundles\MenuManagerBase.cs" />
+    <Compile Include="Bundles\SpellManagerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

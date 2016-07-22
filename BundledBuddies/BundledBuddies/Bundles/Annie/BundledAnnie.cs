@@ -5,7 +5,7 @@ using System;
 
 namespace BundledBuddies.Bundles
 {
-    class BundledAnnie : BundledBase
+    partial class BundledAnnie : BundledBase
     {
         private MenuManager menuManager;
         private SpellManager spellManager;
@@ -17,17 +17,21 @@ namespace BundledBuddies.Bundles
 
             Initialize();
 
-            Chat.Print("BundledAnnie loaded!");
-        }
+            Drawing.OnDraw += OnDraw;
+            Obj_AI_Base.OnLevelUp += OnLevelUp;
 
-        protected override void OnDraw(EventArgs e)
+            Chat.Print("BundledAnnie loaded!");
+            
+        }
+        
+        private void OnDraw(EventArgs e)
         {
             Circle.Draw(indianRed, spellManager.Q.Range, Player.Instance);
             Circle.Draw(mediumPurple, spellManager.W.Range, Player.Instance);
             Circle.Draw(darkRed, spellManager.R.Range, Player.Instance);
         }
 
-        protected override void OnLevelUp(Obj_AI_Base sender, Obj_AI_BaseLevelUpEventArgs e)
+        private void OnLevelUp(Obj_AI_Base sender, Obj_AI_BaseLevelUpEventArgs e)
         {
             if (menuManager.IsAutoSkillEnabled && sender.Equals(Player.Instance))
             {
