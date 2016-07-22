@@ -2,6 +2,8 @@
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
+using System.Collections;
+using System.Linq;
 
 namespace BundledBuddies.Bundles
 {
@@ -16,8 +18,20 @@ namespace BundledBuddies.Bundles
         
         private void OnValueChange(ValueBase<int> sender, ValueBase<int>.ValueChangeArgs e)
         {
-            Chat.Print(sender.DisplayName);
-            Chat.Print((sender as ComboBox).DisplayName);
+            ComboBox[] comboBoxes = new ComboBox[]
+            {
+                Misc["misc_auto_skill_priority_1"] as ComboBox,
+                Misc["misc_auto_skill_priority_2"] as ComboBox,
+                Misc["misc_auto_skill_priority_3"] as ComboBox
+            }.Where(comboBox => !comboBox.Equals(sender as ComboBox)).ToArray();
+
+            int[] possibleValues = new int[] { 0, 1, 2 };
+
+            foreach (ComboBox c in comboBoxes.Where(comboBox => comboBox.CurrentValue.Equals((sender as ComboBox).CurrentValue)))
+            {
+                ComboBox otherBox = comboBoxes.First(comboBox => !comboBox.Equals(c));
+                c.CurrentValue = possibleValues.First(possibleValue => !possibleValue.Equals((sender as ComboBox).CurrentValue) && !possibleValue.Equals(otherBox.CurrentValue));
+            }
         }
 
         private void generateMiscMenu()
@@ -26,18 +40,10 @@ namespace BundledBuddies.Bundles
             Misc.Add("misc_auto_skill_enable", new CheckBox("Enable auto skill levelup", true));
             ComboBox MiscAutoSkillPriority1 = Misc.Add("misc_auto_skill_priority_1", new ComboBox("Auto skill level up priority 1", 0, "Q", "W", "E"));
             MiscAutoSkillPriority1.OnValueChange += OnValueChange;
-            
             ComboBox MiscAutoSkillPriority2 = Misc.Add("misc_auto_skill_priority_2", new ComboBox("Auto skill level up priority 2", 1, "Q", "W", "E"));
-            MiscAutoSkillPriority2.OnValueChange += delegate
-            {
-                int currentValue = MiscAutoSkillPriority2.CurrentValue;
-                int nextValue = (currentValue + 1) % 3;
-
-                if ((Misc["misc_auto_skill_priority_1"] as ComboBox).CurrentValue == currentValue)
-                {
-                    (Misc["misc_auto_skill_priority_1"] as ComboBox).CurrentValue = nextValue;
-                }
-            };
+            MiscAutoSkillPriority2.OnValueChange += OnValueChange;
+            ComboBox MiscAutoSkillPriority3 = Misc.Add("misc_auto_skill_priority_3", new ComboBox("Auto skill level up priority 3", 2, "Q", "W", "E"));
+            MiscAutoSkillPriority3.OnValueChange += OnValueChange;
             Misc.Add("misc_use_qss", new CheckBox("Use Quick Silver Sash", true));
             Misc.Add("misc_use_ms", new CheckBox("Use Mercurial Scimitar", true));
             Misc.Add("misc_use_bc", new CheckBox("Use Bilgewater Cutlass", true));
