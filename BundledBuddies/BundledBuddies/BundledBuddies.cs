@@ -16,6 +16,7 @@ namespace BundledBuddies
 
         private static void OnLoadingComplete(EventArgs e)
         {
+            Chat.Print("TEST");
             switch (Player.Instance.Hero)
             {
                 case Champion.Aatrox:
