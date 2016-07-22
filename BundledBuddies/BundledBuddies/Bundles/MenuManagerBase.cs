@@ -13,22 +13,20 @@ namespace BundledBuddies.Bundles
         {
             generateMiscMenu();
         }
+        
+        private void OnValueChange(ValueBase<int> sender, ValueBase<int>.ValueChangeArgs e)
+        {
+            Chat.Print(sender.DisplayName);
+            Chat.Print((sender as ComboBox).DisplayName);
+        }
 
         private void generateMiscMenu()
         {
             Misc = Main.AddSubMenu("Misc", "misc");
             Misc.Add("misc_auto_skill_enable", new CheckBox("Enable auto skill levelup", true));
             ComboBox MiscAutoSkillPriority1 = Misc.Add("misc_auto_skill_priority_1", new ComboBox("Auto skill level up priority 1", 0, "Q", "W", "E"));
-            MiscAutoSkillPriority1.OnValueChange += delegate
-            {
-                int currentValue = MiscAutoSkillPriority1.CurrentValue;
-                int nextValue = (currentValue + 1) % 3;
-
-                if ((Misc["misc_auto_skill_priority_2"] as ComboBox).CurrentValue == currentValue)
-                {
-                    (Misc["misc_auto_skill_priority_2"] as ComboBox).CurrentValue = nextValue;
-                }
-            };
+            MiscAutoSkillPriority1.OnValueChange += OnValueChange;
+            
             ComboBox MiscAutoSkillPriority2 = Misc.Add("misc_auto_skill_priority_2", new ComboBox("Auto skill level up priority 2", 1, "Q", "W", "E"));
             MiscAutoSkillPriority2.OnValueChange += delegate
             {
