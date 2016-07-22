@@ -12,7 +12,6 @@ namespace BundledBuddies.Bundles
 
         public BundledAnnie() : base()
         {
-            Chat.Print("TEST");
             menuManager = new MenuManager();
             spellManager = new SpellManager();
 

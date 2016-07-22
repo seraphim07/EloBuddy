@@ -1,4 +1,5 @@
-﻿using EloBuddy.SDK.Menu;
+﻿using EloBuddy;
+using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 
 namespace BundledBuddies.Bundles.Annie
@@ -9,6 +10,7 @@ namespace BundledBuddies.Bundles.Annie
 
         public MenuManager() : base()
         {
+            Chat.Print("MENU");
             generateMain();
             generateInitiator();
             generateCombo();
