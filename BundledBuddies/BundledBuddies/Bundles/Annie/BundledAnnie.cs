@@ -15,6 +15,8 @@ namespace BundledBuddies.Bundles
             menuManager = new MenuManager();
             spellManager = new SpellManager();
 
+            Initialize();
+
             Chat.Print("BundledAnnie loaded!");
         }
 

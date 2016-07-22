@@ -1,5 +1,4 @@
-﻿using EloBuddy;
-using EloBuddy.SDK.Menu;
+﻿using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 
 namespace BundledBuddies.Bundles.Annie
@@ -8,9 +7,8 @@ namespace BundledBuddies.Bundles.Annie
     {
         public static Menu Initiator;
 
-        public MenuManager() : base()
+        public MenuManager()
         {
-            Chat.Print("MENU");
             generateMain();
             generateInitiator();
             generateCombo();
@@ -19,6 +17,8 @@ namespace BundledBuddies.Bundles.Annie
             generateJungleClear();
             generateLastHit();
             generateFlee();
+
+            Initialize();
         }
 
         private void generateMain()

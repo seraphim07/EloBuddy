@@ -9,7 +9,7 @@ namespace BundledBuddies.Bundles
     {
         public Menu Main, Combo, Harass, LaneClear, JungleClear, LastHit, Flee, Misc;
 
-        public MenuManagerBase()
+        protected void Initialize()
         {
             generateMiscMenu();
         }

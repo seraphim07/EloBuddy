@@ -18,7 +18,10 @@ namespace BundledBuddies.Bundles
             mediumPurple = new ColorBGRA(Color.MediumPurple.R, Color.MediumPurple.G, Color.MediumPurple.B, 127);
             darkRed = new ColorBGRA(Color.DarkRed.R, Color.DarkRed.G, Color.DarkRed.B, 127);
             darkBlue = new ColorBGRA(Color.DarkBlue.R, Color.DarkBlue.G, Color.DarkBlue.B, 127);
-            
+        }
+
+        protected void Initialize()
+        {
             Drawing.OnDraw += OnDraw;
             Game.OnTick += OnTick;
             Orbwalker.OnPostAttack += OnPostAttack;
