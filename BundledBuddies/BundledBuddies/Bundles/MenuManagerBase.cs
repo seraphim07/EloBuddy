@@ -13,7 +13,7 @@ namespace BundledBuddies.Bundles
 
         protected void Initialize()
         {
-            generateMiscMenu();
+            GenerateMiscMenu();
         }
         
         private void OnValueChange(ValueBase<int> sender, ValueBase<int>.ValueChangeArgs e)
@@ -34,7 +34,7 @@ namespace BundledBuddies.Bundles
             }
         }
 
-        private void generateMiscMenu()
+        private void GenerateMiscMenu()
         {
             Misc = Main.AddSubMenu("Misc", "misc");
             Misc.Add("misc_auto_skill_enable", new CheckBox("Enable auto skill levelup", true));
@@ -53,7 +53,6 @@ namespace BundledBuddies.Bundles
             
             if (Player.Instance.GetSpellSlotFromName("summonerheal") != SpellSlot.Unknown)
             {
-                Misc.Add("misc_use_heal", new CheckBox("Use Heal", true));
                 Misc.Add("misc_use_heal_combo", new CheckBox("Use Heal during Combo mode", true));
                 Misc.Add("misc_use_heal_harass", new CheckBox("Use Heal during Harass mode", false));
                 Misc.Add("misc_use_heal_flee", new CheckBox("Use Heal during Flee mode", true));
@@ -64,7 +63,6 @@ namespace BundledBuddies.Bundles
 
             if (Player.Instance.GetSpellSlotFromName("summonerbarrier") != SpellSlot.Unknown)
             {
-                Misc.Add("misc_use_barrier", new CheckBox("Use Barrier", true));
                 Misc.Add("misc_use_barrier_combo", new CheckBox("Use Barrier during Combo mode", true));
                 Misc.Add("misc_use_barrier_harass", new CheckBox("Use Barrier during Harass mode", false));
                 Misc.Add("misc_use_barrier_flee", new CheckBox("Use Barrier during Flee mode", true));
@@ -79,6 +77,7 @@ namespace BundledBuddies.Bundles
             if (Player.Instance.GetSpellSlotFromName("summonerexhaust") != SpellSlot.Unknown)
             {
                 Misc.Add("misc_use_exhaust", new CheckBox("Use Exhaust", true));
+                Misc.Add("misc_use_exhaust_hp", new Slider("Use Exhaust when <= enemy hp %", 50, 0, 100));
             }
 
             if (Player.Instance.GetSpellSlotFromName("summonerignite") != SpellSlot.Unknown)
@@ -88,6 +87,7 @@ namespace BundledBuddies.Bundles
                 {
                     Misc["misc_use_ignite_killable"].IsVisible = MiscUseIgnite.CurrentValue;
                 };
+                Misc.Add("misc_use_ignite_hp", new Slider("Use Ignite when <= enemy hp %", 25, 0, 100));
                 Misc.Add("misc_use_ignite_killable", new CheckBox("Use Ignite only when killable", true));
             }
         }
@@ -145,6 +145,182 @@ namespace BundledBuddies.Bundles
                     default:
                         return SpellSlot.E;
                 }
+            }
+        }
+
+        public bool UseQss
+        {
+            get
+            {
+                return (Misc["misc_use_qss"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public bool UseMs
+        {
+            get
+            {
+                return (Misc["misc_use_ms"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public bool UsePotion
+        {
+            get
+            {
+                return (Misc["misc_use_potion"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public int PotionHp
+        {
+            get
+            {
+                return (Misc["misc_use_potion_hp"] as Slider).CurrentValue;
+            }
+        }
+
+        public bool UseBc
+        {
+            get
+            {
+                return (Misc["misc_use_bc"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public bool UseBotrk
+        {
+            get
+            {
+                return (Misc["misc_use_botrk"] as CheckBox).CurrentValue;
+            }
+        }
+        
+        public bool UseHealCombo
+        {
+            get
+            {
+                return (Misc["misc_use_heal_combo"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public bool UseHealHarass
+        {
+            get
+            {
+                return (Misc["misc_use_heal_harass"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public bool UseHealFlee
+        {
+            get
+            {
+                return (Misc["misc_use_heal_flee"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public int UseHealHp
+        {
+            get
+            {
+                return (Misc["misc_use_heal_hp"] as Slider).CurrentValue;
+            }
+        }
+
+        public bool UseHealAlly
+        {
+            get
+            {
+                return (Misc["misc_use_heal_ally"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public int UseHealAllyHp
+        {
+            get
+            {
+                return (Misc["misc_use_heal_ally_hp"] as Slider).CurrentValue;
+            }
+        }
+        
+        public bool UseBarrierCombo
+        {
+            get
+            {
+                return (Misc["misc_use_barrier_combo"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public bool UseBarrierHarass
+        {
+            get
+            {
+                return (Misc["misc_use_barrier_harass"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public bool UseBarrierFlee
+        {
+            get
+            {
+                return (Misc["misc_use_barrier_flee"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public int UseBarrierHp
+        {
+            get
+            {
+                return (Misc["misc_use_barrier_hp"] as Slider).CurrentValue;
+            }
+        }
+        
+        public bool UseCleanse
+        {
+            get
+            {
+                return (Misc["misc_use_cleanse"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public bool UseExhaust
+        {
+            get
+            {
+                return (Misc["misc_use_exhaust"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public int UseExhaustHp
+        {
+            get
+            {
+                return (Misc["misc_use_exhaust_hp"] as Slider).CurrentValue;
+            }
+        }
+
+        public bool UseIgnite
+        {
+            get
+            {
+                return (Misc["misc_use_ignite"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public int UseIgniteHp
+        {
+            get
+            {
+                return (Misc["misc_use_ignite_hp"] as Slider).CurrentValue;
+            }
+        }
+
+        public bool UseIgniteKillable
+        {
+            get
+            {
+                return (Misc["misc_use_ignite_killable"] as CheckBox).CurrentValue;
             }
         }
     }

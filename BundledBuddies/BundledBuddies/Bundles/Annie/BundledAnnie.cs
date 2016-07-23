@@ -12,8 +12,13 @@ namespace BundledBuddies.Bundles
 
         public BundledAnnie() : base()
         {
-            menuManager = new MenuManager();
-            spellManager = new SpellManager();
+            menuManagerBase = new MenuManager();
+            spellManagerBase = new SpellManager();
+
+            menuManager = menuManagerBase as MenuManager;
+            spellManager = spellManagerBase as SpellManager;
+
+            primaryDamageType = DamageType.Magical;
 
             Initialize();
 

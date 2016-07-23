@@ -1,7 +1,9 @@
 ﻿using EloBuddy;
 using EloBuddy.SDK;
+using EloBuddy.SDK.Menu.Values;
 using SharpDX;
 using System;
+using System.Linq;
 
 namespace BundledBuddies.Bundles
 {
@@ -11,7 +13,12 @@ namespace BundledBuddies.Bundles
         protected ColorBGRA mediumPurple;
         protected ColorBGRA darkRed;
         protected ColorBGRA darkBlue;
-        
+
+        protected MenuManagerBase menuManagerBase;
+        protected SpellManagerBase spellManagerBase;
+
+        protected DamageType primaryDamageType;
+
         public BundledBase()
         {
             indianRed = new ColorBGRA(Color.IndianRed.R, Color.IndianRed.G, Color.IndianRed.B, 127);
@@ -27,9 +34,15 @@ namespace BundledBuddies.Bundles
 
         private void OnTick(EventArgs e)
         {
-            UseItems();
-
-            UseSpells();
+            UseDefensiveItems();
+            
+            if (menuManagerBase.UseCleanse &&
+                spellManagerBase.Cleanse != null &&
+                spellManagerBase.Cleanse.IsReady() &&
+                IsCCed)
+            {
+                Core.DelayAction(() => spellManagerBase.Cleanse.Cast(), 500);
+            }
 
             OnTickPermaActive();
 
@@ -37,11 +50,19 @@ namespace BundledBuddies.Bundles
             {
                 UseOffensiveItems();
 
+                if (menuManagerBase.UseHealCombo) UseHeal();
+                if (menuManagerBase.UseBarrierCombo) UseBarrier();
+                if (menuManagerBase.UseExhaust) UseExhaust();
+                if (menuManagerBase.UseIgnite) UseIgnite();
+
                 OnTickCombo();
             }
             
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass))
             {
+                if (menuManagerBase.UseHealHarass) UseHeal();
+                if (menuManagerBase.UseBarrierHarass) UseBarrier();
+
                 OnTickHarass();
             }
 
@@ -62,6 +83,9 @@ namespace BundledBuddies.Bundles
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
             {
+                if (menuManagerBase.UseHealFlee) UseHeal();
+                if (menuManagerBase.UseBarrierFlee) UseBarrier();
+
                 OnTickFlee();
             }
         }
@@ -74,24 +98,161 @@ namespace BundledBuddies.Bundles
         protected virtual void OnTickLastHit() { }
         protected virtual void OnTickFlee() { }
 
+        private bool IsCCed
+        {
+            get
+            {
+                return Player.HasBuffOfType(BuffType.Suppression) ||
+                    Player.HasBuffOfType(BuffType.Charm) ||
+                    Player.HasBuffOfType(BuffType.Flee) ||
+                    Player.HasBuffOfType(BuffType.Blind) ||
+                    Player.HasBuffOfType(BuffType.Polymorph) ||
+                    Player.HasBuffOfType(BuffType.Snare) ||
+                    Player.HasBuffOfType(BuffType.Stun) ||
+                    Player.HasBuffOfType(BuffType.Taunt) ||
+                    Player.HasBuff("FizzMarinerDoom") ||
+                    Player.HasBuff("VladimirHemoplague") ||
+                    Player.HasBuff("zedulttargetmark");
+            }
+        }
+
         private void UseDefensiveItems()
         {
+            if (menuManagerBase.UseQss)
+            {
+                ResolveCC(ItemId.Quicksilver_Sash);
+            }
 
-            Misc.Add("misc_use_qss", new CheckBox("Use Quick Silver Sash", true));
-            Misc.Add("misc_use_ms", new CheckBox("Use Mercurial Scimitar", true));
-            Misc.Add("misc_use_potion", new CheckBox("Use Potions", true));
-            Misc.Add("misc_use_potion_hp", new Slider("Use potion when <= hp %", 25, 0, 100));
+            if (menuManagerBase.UseMs)
+            {
+                ResolveCC(ItemId.Mercurial_Scimitar);
+            }
+
+            if (menuManagerBase.UsePotion &&
+                Player.Instance.HealthPercent <= menuManagerBase.PotionHp &&
+                Player.Instance.InventoryItems.HasItem(ItemId.Health_Potion) &&
+                !Player.Instance.IsInShopRange())
+            {
+                InventorySlot healthPotion = Player.Instance.InventoryItems.First(i => i.Id == ItemId.Health_Potion);
+
+                if (healthPotion.CanUseItem())
+                {
+                    Core.DelayAction(() => healthPotion.Cast(), 500);
+                }
+            }
+        }
+
+        private void ResolveCC(ItemId itemId)
+        {
+            if (Player.Instance.InventoryItems.HasItem(itemId) && IsCCed)
+            {
+                InventorySlot item = Player.Instance.InventoryItems.First(i => i.Id == itemId);
+
+                if (item.CanUseItem())
+                {
+                    Core.DelayAction(() => item.Cast(), 500);
+                }
+            }
         }
 
         private void UseOffensiveItems()
         {
-            Misc.Add("misc_use_bc", new CheckBox("Use Bilgewater Cutlass", true));
-            Misc.Add("misc_use_botrk", new CheckBox("Use Blade of the Ruined King", true));
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
+            {
+                if (menuManagerBase.UseBc)
+                {
+                    UseTargettedItem(ItemId.Bilgewater_Cutlass);
+                }
+
+                if (menuManagerBase.UseBotrk)
+                {
+                    UseTargettedItem(ItemId.Blade_of_the_Ruined_King);
+                }
+            }
         }
 
-        private void UseSpells()
+        private void UseTargettedItem(ItemId itemId)
         {
+            if (Player.Instance.InventoryItems.HasItem(itemId))
+            {
+                InventorySlot item = Player.Instance.InventoryItems.First(i => i.Id == itemId);
 
+                if (item.CanUseItem())
+                {
+                    SpellDataInst itemData = Player.Instance.Spellbook.GetSpell(item.SpellSlot);
+                    AIHeroClient target = TargetSelector.GetTarget(itemData.SData.CastRange, primaryDamageType);
+
+                    if (target != null)
+                    {
+                        item.Cast(target);
+                    }
+                }
+            }
+        }
+
+        private void UseHeal()
+        {
+            if (spellManagerBase.Heal != null && spellManagerBase.Heal.IsReady())
+            {
+                bool useHeal = Player.Instance.HealthPercent <= menuManagerBase.UseHealHp;
+
+                if (menuManagerBase.UseHealAlly)
+                {
+                    useHeal |= EntityManager.Heroes.Allies.FirstOrDefault(x => x.Distance(Player.Instance) < 850 && x.HealthPercent <= menuManagerBase.UseHealAllyHp) != null;
+                }
+
+                if (useHeal)
+                {
+                    spellManagerBase.Heal.Cast();
+                }
+            }
+        }
+
+        private void UseBarrier()
+        {
+            if (spellManagerBase.Barrier != null &&
+                spellManagerBase.Barrier.IsReady() &&
+                Player.Instance.HealthPercent <= menuManagerBase.UseBarrierHp)
+            {
+                spellManagerBase.Barrier.Cast();
+            }
+        }
+
+        private void UseExhaust()
+        {
+            if (spellManagerBase.Exhaust != null &&
+                spellManagerBase.Exhaust.IsReady())
+            {
+                AIHeroClient target = TargetSelector.GetTarget(EntityManager.Heroes.Enemies.Where(x => x.Distance(Player.Instance) < spellManagerBase.Exhaust.Range && x.HealthPercent <= menuManagerBase.UseExhaustHp), primaryDamageType);
+
+                if (target != null)
+                {
+                    spellManagerBase.Exhaust.Cast(target);
+                }
+            }
+        }
+
+        private void UseIgnite()
+        {
+            if (spellManagerBase.Ignite != null &&
+                spellManagerBase.Ignite.IsReady())
+            {
+                AIHeroClient target = null;
+
+                if (menuManagerBase.UseIgniteKillable)
+                {
+                    target = TargetSelector.GetTarget(EntityManager.Heroes.Enemies.Where(x => x.Distance(Player.Instance) < spellManagerBase.Ignite.Range && spellManagerBase.Ignite.GetHealthPrediction(x) <= 0.0f), primaryDamageType);
+                }
+                else
+                {
+                    target = TargetSelector.GetTarget(EntityManager.Heroes.Enemies.Where(x => x.Distance(Player.Instance) < spellManagerBase.Ignite.Range && x.HealthPercent <= menuManagerBase.UseIgniteHp), primaryDamageType);
+                }
+
+                if (target != null)
+                {
+                    spellManagerBase.Ignite.Cast(target);
+                }
+            }
         }
     }
 }
