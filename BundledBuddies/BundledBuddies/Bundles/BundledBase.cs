@@ -45,12 +45,10 @@ namespace BundledBuddies.Bundles
 
             OnTickPermaActive();
 
-            Chat.Print(Orbwalker.ActiveModesFlags.ToString());
+            Chat.Print("Front");
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
             {
-                Chat.Print("Combo!");
-
                 UseOffensiveItems();
 
                 if (menuManagerBase.UseHealCombo) UseHeal();
@@ -91,6 +89,8 @@ namespace BundledBuddies.Bundles
 
                 OnTickFlee();
             }
+
+            Chat.Print("End");
         }
 
         protected virtual void OnTickPermaActive() { }
