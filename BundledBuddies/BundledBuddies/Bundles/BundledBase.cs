@@ -34,14 +34,13 @@ namespace BundledBuddies.Bundles
         private void OnTick(EventArgs e)
         {
             UseDefensiveItems();
-
-            Chat.Print("Cleanse");
-
+            
             if (menuManagerBase.UseCleanse &&
                 spellManagerBase.Cleanse != null &&
                 spellManagerBase.Cleanse.IsReady() &&
                 IsCCed)
             {
+                Chat.Print("Cleanse");
                 Core.DelayAction(() => spellManagerBase.Cleanse.Cast(), 500);
             }
 
