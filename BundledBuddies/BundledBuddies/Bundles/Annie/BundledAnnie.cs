@@ -52,5 +52,40 @@ namespace BundledBuddies.Bundles
                 }
             }
         }
+
+        protected override void OnTickPermaActive()
+        {
+            
+        }
+
+        protected override void OnTickCombo()
+        {
+            
+        }
+
+        protected override void OnTickHarass()
+        {
+            
+        }
+
+        protected override void OnTickLaneClear()
+        {
+            
+        }
+
+        protected override void OnTickJungleClear()
+        {
+            
+        }
+
+        protected override void OnTickLastHit()
+        {
+            
+        }
+
+        protected override void OnTickFlee()
+        {
+            
+        }
     }
 }
