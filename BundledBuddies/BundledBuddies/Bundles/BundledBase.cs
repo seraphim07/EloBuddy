@@ -192,17 +192,24 @@ namespace BundledBuddies.Bundles
 
         private void UseHeal()
         {
+            Chat.Print("Heal Null: " + spellManagerBase.Heal != null);
+            Chat.Print("Heal Ready: " + spellManagerBase.Heal.IsReady());
+
             if (spellManagerBase.Heal != null && spellManagerBase.Heal.IsReady())
             {
                 bool useHeal = Player.Instance.HealthPercent <= menuManagerBase.UseHealHp;
+                Chat.Print("HealthPercent Comparison: " + useHeal);
 
                 if (menuManagerBase.UseHealAlly)
                 {
+                    Chat.Print("Ally?");
                     useHeal |= EntityManager.Heroes.Allies.FirstOrDefault(x => x.Distance(Player.Instance) < 850 && x.HealthPercent <= menuManagerBase.UseHealAllyHp) != null;
+                    Chat.Print("UseHeal after ally: " + useHeal);
                 }
 
                 if (useHeal)
                 {
+                    Chat.Print("Cast?");
                     spellManagerBase.Heal.Cast();
                 }
             }
