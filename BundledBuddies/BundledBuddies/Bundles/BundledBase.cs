@@ -1,6 +1,5 @@
 ﻿using EloBuddy;
 using EloBuddy.SDK;
-using EloBuddy.SDK.Menu.Values;
 using SharpDX;
 using System;
 using System.Linq;
@@ -29,11 +28,13 @@ namespace BundledBuddies.Bundles
 
         protected void Initialize()
         {
+            Chat.Print("Initialize!");
             Game.OnTick += OnTick;
         }
 
         private void OnTick(EventArgs e)
         {
+            Chat.Print("OnTick!");
             UseDefensiveItems();
             
             if (menuManagerBase.UseCleanse &&
