@@ -200,7 +200,7 @@ namespace BundledBuddies.Bundles
         {
             get
             {
-                return (Misc["misc_use_heal_combo"] as CheckBox).CurrentValue;
+                return Misc["misc_use_heal_combo"] != null ? (Misc["misc_use_heal_combo"] as CheckBox).CurrentValue : false;
             }
         }
 
@@ -208,7 +208,7 @@ namespace BundledBuddies.Bundles
         {
             get
             {
-                return (Misc["misc_use_heal_harass"] as CheckBox).CurrentValue;
+                return Misc["misc_use_heal_harass"] != null ? (Misc["misc_use_heal_harass"] as CheckBox).CurrentValue : false;
             }
         }
 
@@ -216,7 +216,7 @@ namespace BundledBuddies.Bundles
         {
             get
             {
-                return (Misc["misc_use_heal_flee"] as CheckBox).CurrentValue;
+                return Misc["misc_use_heal_flee"] != null ? (Misc["misc_use_heal_flee"] as CheckBox).CurrentValue : false;
             }
         }
 
@@ -224,7 +224,7 @@ namespace BundledBuddies.Bundles
         {
             get
             {
-                return (Misc["misc_use_heal_hp"] as Slider).CurrentValue;
+                return Misc["misc_use_heal_hp"] != null ? (Misc["misc_use_heal_hp"] as Slider).CurrentValue : 0;
             }
         }
 
@@ -232,7 +232,7 @@ namespace BundledBuddies.Bundles
         {
             get
             {
-                return (Misc["misc_use_heal_ally"] as CheckBox).CurrentValue;
+                return Misc["misc_use_heal_ally"] != null ? (Misc["misc_use_heal_ally"] as CheckBox).CurrentValue : false;
             }
         }
 
@@ -240,7 +240,7 @@ namespace BundledBuddies.Bundles
         {
             get
             {
-                return (Misc["misc_use_heal_ally_hp"] as Slider).CurrentValue;
+                return Misc["misc_use_heal_ally_hp"] != null ? (Misc["misc_use_heal_ally_hp"] as Slider).CurrentValue : 0;
             }
         }
         
@@ -248,7 +248,7 @@ namespace BundledBuddies.Bundles
         {
             get
             {
-                return (Misc["misc_use_barrier_combo"] as CheckBox).CurrentValue;
+                return Misc["misc_use_barrier_combo"] != null ? (Misc["misc_use_barrier_combo"] as CheckBox).CurrentValue : false;
             }
         }
 
@@ -256,7 +256,7 @@ namespace BundledBuddies.Bundles
         {
             get
             {
-                return (Misc["misc_use_barrier_harass"] as CheckBox).CurrentValue;
+                return Misc["misc_use_barrier_harass"] != null ? (Misc["misc_use_barrier_harass"] as CheckBox).CurrentValue : false;
             }
         }
 
@@ -264,7 +264,7 @@ namespace BundledBuddies.Bundles
         {
             get
             {
-                return (Misc["misc_use_barrier_flee"] as CheckBox).CurrentValue;
+                return Misc["misc_use_barrier_flee"] != null ? (Misc["misc_use_barrier_flee"] as CheckBox).CurrentValue : false;
             }
         }
 
@@ -272,7 +272,7 @@ namespace BundledBuddies.Bundles
         {
             get
             {
-                return (Misc["misc_use_barrier_hp"] as Slider).CurrentValue;
+                return Misc["misc_use_barrier_hp"] != null ? (Misc["misc_use_barrier_hp"] as Slider).CurrentValue : 0;
             }
         }
         
@@ -280,7 +280,7 @@ namespace BundledBuddies.Bundles
         {
             get
             {
-                return (Misc["misc_use_cleanse"] as CheckBox).CurrentValue;
+                return Misc["misc_use_cleanse"] != null ? (Misc["misc_use_cleanse"] as CheckBox).CurrentValue : false;
             }
         }
 
@@ -288,7 +288,7 @@ namespace BundledBuddies.Bundles
         {
             get
             {
-                return (Misc["misc_use_exhaust"] as CheckBox).CurrentValue;
+                return Misc["misc_use_exhaust"] != null ? (Misc["misc_use_exhaust"] as CheckBox).CurrentValue : false;
             }
         }
 
@@ -296,7 +296,7 @@ namespace BundledBuddies.Bundles
         {
             get
             {
-                return (Misc["misc_use_exhaust_hp"] as Slider).CurrentValue;
+                return Misc["misc_use_exhaust_hp"] != null ? (Misc["misc_use_exhaust_hp"] as Slider).CurrentValue : 0;
             }
         }
 
@@ -304,7 +304,7 @@ namespace BundledBuddies.Bundles
         {
             get
             {
-                return (Misc["misc_use_ignite"] as CheckBox).CurrentValue;
+                return Misc["misc_use_ignite"] != null ? (Misc["misc_use_ignite"] as CheckBox).CurrentValue : false;
             }
         }
 
@@ -312,7 +312,7 @@ namespace BundledBuddies.Bundles
         {
             get
             {
-                return (Misc["misc_use_ignite_hp"] as Slider).CurrentValue;
+                return Misc["misc_use_ignite_hp"] != null ? (Misc["misc_use_ignite_hp"] as Slider).CurrentValue : 0;
             }
         }
 
@@ -320,7 +320,7 @@ namespace BundledBuddies.Bundles
         {
             get
             {
-                return (Misc["misc_use_ignite_killable"] as CheckBox).CurrentValue;
+                return Misc["misc_use_ignite_killable"] != null ? (Misc["misc_use_ignite_killable"] as CheckBox).CurrentValue : false;
             }
         }
     }

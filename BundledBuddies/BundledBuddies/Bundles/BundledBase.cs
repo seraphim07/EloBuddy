@@ -35,21 +35,8 @@ namespace BundledBuddies.Bundles
         {
             UseDefensiveItems();
             
-            if (menuManagerBase.UseCleanse &&
-                spellManagerBase.Cleanse != null &&
-                spellManagerBase.Cleanse.IsReady() &&
-                IsCCed)
-            {
-                Chat.Print("Cleanse");
-                Core.DelayAction(() => spellManagerBase.Cleanse.Cast(), 500);
-            }
-
-            Chat.Print("PermaActive");
-
             OnTickPermaActive();
-
-            Chat.Print("Front");
-
+            
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
             {
                 UseOffensiveItems();
@@ -92,11 +79,19 @@ namespace BundledBuddies.Bundles
 
                 OnTickFlee();
             }
-
-            Chat.Print("End");
         }
 
-        protected virtual void OnTickPermaActive() { }
+        protected virtual void OnTickPermaActive()
+        {
+            if (menuManagerBase.UseCleanse &&
+                spellManagerBase.Cleanse != null &&
+                spellManagerBase.Cleanse.IsReady() &&
+                IsCCed)
+            {
+                Core.DelayAction(() => spellManagerBase.Cleanse.Cast(), 500);
+            }
+        }
+
         protected virtual void OnTickCombo() { }
         protected virtual void OnTickHarass() { }
         protected virtual void OnTickLaneClear() { }

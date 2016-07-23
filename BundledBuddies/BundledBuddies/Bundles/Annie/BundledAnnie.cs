@@ -55,7 +55,7 @@ namespace BundledBuddies.Bundles
 
         protected override void OnTickPermaActive()
         {
-            
+            base.OnTickPermaActive();
         }
 
         protected override void OnTickCombo()
