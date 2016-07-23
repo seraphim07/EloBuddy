@@ -48,6 +48,8 @@ namespace BundledBuddies.Bundles
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
             {
+                Chat.Print("Combo!");
+
                 UseOffensiveItems();
 
                 if (menuManagerBase.UseHealCombo) UseHeal();
