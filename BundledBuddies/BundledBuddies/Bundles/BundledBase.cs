@@ -34,7 +34,9 @@ namespace BundledBuddies.Bundles
         private void OnTick(EventArgs e)
         {
             UseDefensiveItems();
-            
+
+            Chat.Print("Cleanse");
+
             if (menuManagerBase.UseCleanse &&
                 spellManagerBase.Cleanse != null &&
                 spellManagerBase.Cleanse.IsReady() &&
@@ -42,6 +44,8 @@ namespace BundledBuddies.Bundles
             {
                 Core.DelayAction(() => spellManagerBase.Cleanse.Cast(), 500);
             }
+
+            Chat.Print("PermaActive");
 
             OnTickPermaActive();
 
