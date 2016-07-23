@@ -29,6 +29,24 @@ namespace BundledBuddies.Bundles
         protected void Initialize()
         {
             Game.OnTick += OnTick;
+            Obj_AI_Base.OnLevelUp += OnLevelUp;
+        }
+
+        private void OnLevelUp(Obj_AI_Base sender, Obj_AI_BaseLevelUpEventArgs e)
+        {
+            if (menuManagerBase.IsAutoSkillEnabled && sender.Equals(Player.Instance))
+            {
+                Spellbook spellbook = Player.Instance.Spellbook;
+                SpellSlot[] spells = new SpellSlot[] { SpellSlot.R, menuManagerBase.FirstPrioritySkill, menuManagerBase.SecondPrioritySkill, menuManagerBase.ThirdPrioritySkill };
+
+                for (int i = 0; i < spells.Length; i++)
+                {
+                    while (spellbook.GetSpell(spells[i]).IsUpgradable)
+                    {
+                        spellbook.LevelSpell(spells[i]);
+                    }
+                }
+            }
         }
 
         private void OnTick(EventArgs e)
@@ -130,6 +148,7 @@ namespace BundledBuddies.Bundles
             }
 
             if (menuManagerBase.UsePotion &&
+                !Player.HasBuff("RegenerationPotion") &&
                 Player.Instance.HealthPercent <= menuManagerBase.PotionHp &&
                 Player.Instance.InventoryItems.HasItem(ItemId.Health_Potion) &&
                 !Player.Instance.IsInShopRange())
@@ -193,24 +212,17 @@ namespace BundledBuddies.Bundles
 
         private void UseHeal()
         {
-            Chat.Print("Heal Null: " + spellManagerBase.Heal != null);
-            Chat.Print("Heal Ready: " + spellManagerBase.Heal.IsReady());
-
             if (spellManagerBase.Heal != null && spellManagerBase.Heal.IsReady())
             {
                 bool useHeal = Player.Instance.HealthPercent <= menuManagerBase.UseHealHp;
-                Chat.Print("HealthPercent Comparison: " + useHeal);
-
+                
                 if (menuManagerBase.UseHealAlly)
                 {
-                    Chat.Print("Ally?");
                     useHeal |= EntityManager.Heroes.Allies.FirstOrDefault(x => x.Distance(Player.Instance) < 850 && x.HealthPercent <= menuManagerBase.UseHealAllyHp) != null;
-                    Chat.Print("UseHeal after ally: " + useHeal);
                 }
 
                 if (useHeal)
                 {
-                    Chat.Print("Cast?");
                     spellManagerBase.Heal.Cast();
                 }
             }

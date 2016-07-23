@@ -57,12 +57,39 @@ namespace BundledBuddies.Bundles.Annie
             Harass.Add("harass_use_e", new CheckBox("Use E", false));
         }
 
+        #region Lane Clear
         private void GenerateLaneClear()
         {
             LaneClear = Main.AddSubMenu("Lane Clear", "lane_clear");
             LaneClear.Add("lane_clear_use_w", new CheckBox("Use W", true));
             LaneClear.Add("lane_clear_w_mana", new Slider("Use W when >= mana %", 50, 0, 100));
+            LaneClear.Add("lane_cear_w_number", new Slider("Use W when >= number of minions", 2, 0, 10));
         }
+
+        public bool LaneClearUseW
+        {
+            get
+            {
+                return (LaneClear["lane_clear_use_w"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public int LaneClearWMana
+        {
+            get
+            {
+                return (LaneClear["lane_clear_w_mana"] as Slider).CurrentValue;
+            }
+        }
+
+        public int LaneClearWNumber
+        {
+            get
+            {
+                return (LaneClear["lane_clear_w_number"] as Slider).CurrentValue;
+            }
+        }
+        #endregion
 
         private void GenerateJungleClear()
         {
@@ -72,11 +99,21 @@ namespace BundledBuddies.Bundles.Annie
             JungleClear.Add("jungle_clear_use_e", new CheckBox("Use E", true));
         }
 
+        #region Last Hit
         private void GenerateLastHit()
         {
             LastHit = Main.AddSubMenu("Last Hit", "last_hit");
             LastHit.Add("last_hit_use_q", new CheckBox("Use Q", true));
         }
+
+        public bool LastHitUseQ
+        {
+            get
+            {
+                return (LastHit["last_hit_use_q"] as CheckBox).CurrentValue;
+            }
+        }
+        #endregion
 
         private void GenerateFlee()
         {

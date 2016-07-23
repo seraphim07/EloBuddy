@@ -1,7 +1,9 @@
 ﻿using BundledBuddies.Bundles.Annie;
 using EloBuddy;
+using EloBuddy.SDK;
 using EloBuddy.SDK.Rendering;
 using System;
+using System.Collections;
 
 namespace BundledBuddies.Bundles
 {
@@ -23,7 +25,6 @@ namespace BundledBuddies.Bundles
             Initialize();
 
             Drawing.OnDraw += OnDraw;
-            Obj_AI_Base.OnLevelUp += OnLevelUp;
 
             Chat.Print("BundledAnnie loaded!");
             
@@ -34,23 +35,6 @@ namespace BundledBuddies.Bundles
             Circle.Draw(indianRed, spellManager.Q.Range, Player.Instance);
             Circle.Draw(mediumPurple, spellManager.W.Range, Player.Instance);
             Circle.Draw(darkRed, spellManager.R.Range, Player.Instance);
-        }
-
-        private void OnLevelUp(Obj_AI_Base sender, Obj_AI_BaseLevelUpEventArgs e)
-        {
-            if (menuManager.IsAutoSkillEnabled && sender.Equals(Player.Instance))
-            {
-                Spellbook spellbook = Player.Instance.Spellbook;
-                SpellSlot[] spells = new SpellSlot[] { SpellSlot.R, menuManager.FirstPrioritySkill, menuManager.SecondPrioritySkill, menuManager.ThirdPrioritySkill };
-                
-                for (int i = 0; i < spells.Length; i++)
-                {
-                    while (spellbook.GetSpell(spells[i]).IsUpgradable)
-                    {
-                        spellbook.LevelSpell(spells[i]);
-                    }
-                }
-            }
         }
 
         protected override void OnTickPermaActive()
@@ -70,7 +54,14 @@ namespace BundledBuddies.Bundles
 
         protected override void OnTickLaneClear()
         {
-            
+            LastHitQ();
+
+            if (menuManager.LaneClearUseW &&
+                Player.Instance.ManaPercent >= menuManager.LaneClearWMana &&
+                spellManager.W.IsReady())
+            {
+                spellManager.W.CastOnBestFarmPosition(menuManager.LaneClearWNumber);
+            }
         }
 
         protected override void OnTickJungleClear()
@@ -80,12 +71,31 @@ namespace BundledBuddies.Bundles
 
         protected override void OnTickLastHit()
         {
-            
+            if (menuManager.LastHitUseQ)
+            {
+                LastHitQ();
+            }
+
+            base.OnTickLastHit();
         }
 
         protected override void OnTickFlee()
         {
             
+        }
+
+        private void LastHitQ()
+        {
+            if (spellManager.Q.IsReady())
+            {
+                foreach (Obj_AI_Minion minion in EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spellManager.Q.Range, false))
+                {
+                    if (Player.Instance.GetAutoAttackDamage(minion) < minion.Health && spellManager.Q.GetHealthPrediction(minion) <= 0.0f)
+                    {
+                        spellManager.Q.Cast(minion);
+                    }
+                }
+            }
         }
     }
 }

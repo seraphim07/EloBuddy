@@ -2,7 +2,6 @@
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
-using System.Collections;
 using System.Linq;
 
 namespace BundledBuddies.Bundles
@@ -91,7 +90,8 @@ namespace BundledBuddies.Bundles
                 Misc.Add("misc_use_ignite_killable", new CheckBox("Use Ignite only when killable", true));
             }
         }
-        
+
+        #region Auto Skill Accessors
         public bool IsAutoSkillEnabled
         {
             get
@@ -147,7 +147,9 @@ namespace BundledBuddies.Bundles
                 }
             }
         }
+        #endregion
 
+        #region Item Accessors
         public bool UseQss
         {
             get
@@ -195,7 +197,9 @@ namespace BundledBuddies.Bundles
                 return (Misc["misc_use_botrk"] as CheckBox).CurrentValue;
             }
         }
-        
+        #endregion
+
+        #region Summoner Spell Accessors
         public bool UseHealCombo
         {
             get
@@ -323,5 +327,6 @@ namespace BundledBuddies.Bundles
                 return Misc["misc_use_ignite_killable"] != null ? (Misc["misc_use_ignite_killable"] as CheckBox).CurrentValue : false;
             }
         }
+        #endregion
     }
 }
