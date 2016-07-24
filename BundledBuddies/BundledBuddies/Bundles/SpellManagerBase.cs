@@ -7,25 +7,32 @@ namespace BundledBuddies.Bundles
 {
     class SpellManagerBase
     {
+        public const string NAME_HEAL = "SummonerHeal";
+        public const string NAME_BARRIER = "SummonerBarrier";
+        public const string NAME_CLEANSE = "SummonerBoost";
+        public const string NAME_EXHAUST = "SummonerExhaust";
+        public const string NAME_GHOST = "SummonerHaste";
+        
         public Spell.Active Heal;
         public Spell.Active Barrier;
         public Spell.Active Cleanse;
         public Spell.Targeted Exhaust;
         public Spell.Targeted Ignite;
         public Spell.Skillshot Flash;
+        public Spell.Active Ghost;
 
         public SpellManagerBase()
         {
-            SpellSlot healSlot = Player.Instance.GetSpellSlotFromName("summonerheal");
+            SpellSlot healSlot = Player.Instance.GetSpellSlotFromName(NAME_HEAL);
             Heal = !healSlot.Equals(SpellSlot.Unknown) ? new Spell.Active(healSlot) : null;
             
-            SpellSlot barrierSlot = Player.Instance.GetSpellSlotFromName("summonerbarrier");
+            SpellSlot barrierSlot = Player.Instance.GetSpellSlotFromName(NAME_BARRIER);
             Barrier = !barrierSlot.Equals(SpellSlot.Unknown) ? new Spell.Active(barrierSlot) : null;
 
-            SpellSlot cleanseSlot = Player.Instance.GetSpellSlotFromName("summonercleanse");
+            SpellSlot cleanseSlot = Player.Instance.GetSpellSlotFromName(NAME_CLEANSE);
             Cleanse = !cleanseSlot.Equals(SpellSlot.Unknown) ? new Spell.Active(cleanseSlot) : null;
 
-            SpellSlot exhaustSlot = Player.Instance.GetSpellSlotFromName("summonerexhaust");
+            SpellSlot exhaustSlot = Player.Instance.GetSpellSlotFromName(NAME_EXHAUST);
             if (!exhaustSlot.Equals(SpellSlot.Unknown))
             {
                 SpellDataInst exhaustData = Player.Instance.Spellbook.GetSpell(exhaustSlot);
@@ -52,6 +59,12 @@ namespace BundledBuddies.Bundles
             {
                 SpellDataInst flashData = Player.Instance.Spellbook.GetSpell(flashSlot);
                 Flash = new Spell.Skillshot(flashSlot, Convert.ToUInt32(flashData.SData.CastRange), SkillShotType.Linear);
+            }
+            
+            SpellSlot ghostSlot = Player.Instance.GetSpellSlotFromName(NAME_GHOST);
+            if (!ghostSlot.Equals(SpellSlot.Unknown))
+            {
+                Ghost = new Spell.Active(ghostSlot);
             }
         }
     }

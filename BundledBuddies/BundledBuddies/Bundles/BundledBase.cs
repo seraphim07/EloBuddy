@@ -34,17 +34,22 @@ namespace BundledBuddies.Bundles
 
         private void OnLevelUp(Obj_AI_Base sender, Obj_AI_BaseLevelUpEventArgs e)
         {
-            if (menuManagerBase.IsAutoSkillEnabled && sender.Equals(Player.Instance))
+            if (menuManagerBase.IsAutoSkillEnabled && sender.Name.Equals(Player.Instance.Name))
             {
                 Spellbook spellbook = Player.Instance.Spellbook;
                 SpellSlot[] spells = new SpellSlot[] { SpellSlot.R, menuManagerBase.FirstPrioritySkill, menuManagerBase.SecondPrioritySkill, menuManagerBase.ThirdPrioritySkill };
 
                 for (int i = 0; i < spells.Length; i++)
                 {
-                    while (spellbook.GetSpell(spells[i]).IsUpgradable)
+                    if (!spellbook.GetSpell(spells[i]).IsLearned)
                     {
                         spellbook.LevelSpell(spells[i]);
                     }
+                }
+
+                for (int i = 0; i < spells.Length; i++)
+                {
+                    spellbook.LevelSpell(spells[i]);
                 }
             }
         }
@@ -94,6 +99,7 @@ namespace BundledBuddies.Bundles
             {
                 if (menuManagerBase.UseHealFlee) UseHeal();
                 if (menuManagerBase.UseBarrierFlee) UseBarrier();
+                if (menuManagerBase.UseGhostFlee) spellManagerBase.Ghost.Cast();
 
                 OnTickFlee();
             }

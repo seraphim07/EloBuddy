@@ -50,7 +50,7 @@ namespace BundledBuddies.Bundles
             Misc.Add("misc_use_potion", new CheckBox("Use Potions", true));
             Misc.Add("misc_use_potion_hp", new Slider("Use potion when <= hp %", 25, 0, 100));
             
-            if (Player.Instance.GetSpellSlotFromName("summonerheal") != SpellSlot.Unknown)
+            if (Player.Instance.GetSpellSlotFromName(SpellManagerBase.NAME_HEAL) != SpellSlot.Unknown)
             {
                 Misc.Add("misc_use_heal_combo", new CheckBox("Use Heal during Combo mode", true));
                 Misc.Add("misc_use_heal_harass", new CheckBox("Use Heal during Harass mode", false));
@@ -60,7 +60,7 @@ namespace BundledBuddies.Bundles
                 Misc.Add("misc_use_heal_ally_hp", new Slider("Use Heal when <= ally's hp %", 25, 0, 100));
             }
 
-            if (Player.Instance.GetSpellSlotFromName("summonerbarrier") != SpellSlot.Unknown)
+            if (Player.Instance.GetSpellSlotFromName(SpellManagerBase.NAME_BARRIER) != SpellSlot.Unknown)
             {
                 Misc.Add("misc_use_barrier_combo", new CheckBox("Use Barrier during Combo mode", true));
                 Misc.Add("misc_use_barrier_harass", new CheckBox("Use Barrier during Harass mode", false));
@@ -68,12 +68,12 @@ namespace BundledBuddies.Bundles
                 Misc.Add("misc_use_barrier_hp", new Slider("Use Barrier when <= hp %", 25, 0, 100));
             }
 
-            if (Player.Instance.GetSpellSlotFromName("summonercleanse") != SpellSlot.Unknown)
+            if (Player.Instance.GetSpellSlotFromName(SpellManagerBase.NAME_CLEANSE) != SpellSlot.Unknown)
             {
                 Misc.Add("misc_use_cleanse", new CheckBox("Use Cleanse", true));
             }
 
-            if (Player.Instance.GetSpellSlotFromName("summonerexhaust") != SpellSlot.Unknown)
+            if (Player.Instance.GetSpellSlotFromName(SpellManagerBase.NAME_EXHAUST) != SpellSlot.Unknown)
             {
                 Misc.Add("misc_use_exhaust", new CheckBox("Use Exhaust", true));
                 Misc.Add("misc_use_exhaust_hp", new Slider("Use Exhaust when <= enemy hp %", 50, 0, 100));
@@ -88,6 +88,11 @@ namespace BundledBuddies.Bundles
                 };
                 Misc.Add("misc_use_ignite_hp", new Slider("Use Ignite when <= enemy hp %", 25, 0, 100));
                 Misc.Add("misc_use_ignite_killable", new CheckBox("Use Ignite only when killable", true));
+            }
+
+            if (Player.Instance.GetSpellSlotFromName(SpellManagerBase.NAME_GHOST) != SpellSlot.Unknown)
+            {
+                CheckBox MiscUseGhostFlee = Misc.Add("misc_use_ghost_flee", new CheckBox("Use Ghost during Flee mode", true));
             }
         }
 
@@ -325,6 +330,14 @@ namespace BundledBuddies.Bundles
             get
             {
                 return Misc["misc_use_ignite_killable"] != null ? (Misc["misc_use_ignite_killable"] as CheckBox).CurrentValue : false;
+            }
+        }
+
+        public bool UseGhostFlee
+        {
+            get
+            {
+                return Misc["misc_use_ghost_flee"] != null ? (Misc["misc_use_ghost_flee"] as CheckBox).CurrentValue : false;
             }
         }
         #endregion

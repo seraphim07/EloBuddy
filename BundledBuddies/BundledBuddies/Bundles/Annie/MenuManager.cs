@@ -26,18 +26,43 @@ namespace BundledBuddies.Bundles.Annie
             Main = MainMenu.AddMenu("Bundled Annie", "bundled_annie");
             Main.AddGroupLabel("Welcome to Bundled Annie!");
             Main.AddGroupLabel("Made by seraphim07");
-            Main.AddGroupLabel("Feel free to send email to seraphim_07@hotmail.com for bug reports, ideas for improvements, etc!");
         }
 
+        #region Initiator
         private void GenerateInitiator()
         {
             Initiator = Main.AddSubMenu("Initiator", "initiator");
             Initiator.Add("initiator_key", new KeyBind("Initiator", false, KeyBind.BindTypes.HoldActive, 'Z'));
-            Initiator.Add("initiator_condition", new Slider("Initiate when >= enemies are in your R range", 2, 1, 5));
+            Initiator.Add("initiator_condition", new Slider("Initiate when >= enemies can be hit with R", 2, 1, 5));
             Initiator.Add("initiator_initiate_when_stun", new CheckBox("Only initiate when you have stun", true));
-            Initiator.Add("initiator_use_w", new CheckBox("Use W to stack stun", true));
         }
 
+        public bool InitiatorKey
+        {
+            get
+            {
+                return (Initiator["initiator_key"] as KeyBind).CurrentValue;
+            }
+        }
+
+        public int InitiatorCondition
+        {
+            get
+            {
+                return (Initiator["initiator_condition"] as Slider).CurrentValue;
+            }
+        }
+
+        public bool InitiatorInitiateWhenStun
+        {
+            get
+            {
+                return (Initiator["initiator_initiate_when_stun"] as CheckBox).CurrentValue;
+            }
+        }
+        #endregion
+
+        #region Combo
         private void GenerateCombo()
         {
             Combo = Main.AddSubMenu("Combo", "combo");
@@ -47,15 +72,99 @@ namespace BundledBuddies.Bundles.Annie
             Combo.Add("combo_use_r", new CheckBox("Use R", true));
         }
 
+        public bool ComboUseQ
+        {
+            get
+            {
+                return (Combo["combo_use_q"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public bool ComboUseW
+        {
+            get
+            {
+                return (Combo["combo_use_w"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public bool ComboUseE
+        {
+            get
+            {
+                return (Combo["combo_use_e"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public bool ComboUseR
+        {
+            get
+            {
+                return (Combo["combo_use_r"] as CheckBox).CurrentValue;
+            }
+        }
+        #endregion
+
+        #region Harass
         private void GenerateHarass()
         {
             Harass = Main.AddSubMenu("Harass", "harass");
-            Harass.Add("harass_use_w_stun", new CheckBox("Use W to stack stun", false));
-            Harass.Add("harass_use_e_stun", new CheckBox("Use E to stack stun", false));
+            Harass.Add("harass_use_w_stack_stun", new CheckBox("Use W to stack stun", true));
+            Harass.Add("harass_w_mana", new Slider("Use W when >= mana %", 50, 0, 100));
+            Harass.Add("harass_w_number", new Slider("Use W when >= number of minions", 3, 0, 10));
+            Harass.Add("harass_use_e_stack_stun", new CheckBox("Use E to stack stun", true));
             Harass.Add("harass_use_q", new CheckBox("Use Q", true));
             Harass.Add("harass_use_w", new CheckBox("Use W", true));
-            Harass.Add("harass_use_e", new CheckBox("Use E", false));
         }
+
+        public bool HarassUseWStackStun
+        {
+            get
+            {
+                return (Harass["harass_use_w_stack_stun"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public int HarassWMana
+        {
+            get
+            {
+                return (Harass["harass_w_mana"] as Slider).CurrentValue;
+            }
+        }
+
+        public int HarassWNumber
+        {
+            get
+            {
+                return (Harass["harass_w_number"] as Slider).CurrentValue;
+            }
+        }
+
+        public bool HarassUseEStackStun
+        {
+            get
+            {
+                return (Harass["harass_use_e_stack_stun"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public bool HarassUseQ
+        {
+            get
+            {
+                return (Harass["harass_use_q"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public bool HarassUseW
+        {
+            get
+            {
+                return (Harass["harass_use_w"] as CheckBox).CurrentValue;
+            }
+        }
+        #endregion
 
         #region Lane Clear
         private void GenerateLaneClear()
@@ -63,7 +172,7 @@ namespace BundledBuddies.Bundles.Annie
             LaneClear = Main.AddSubMenu("Lane Clear", "lane_clear");
             LaneClear.Add("lane_clear_use_w", new CheckBox("Use W", true));
             LaneClear.Add("lane_clear_w_mana", new Slider("Use W when >= mana %", 50, 0, 100));
-            LaneClear.Add("lane_cear_w_number", new Slider("Use W when >= number of minions", 2, 0, 10));
+            LaneClear.Add("lane_clear_w_number", new Slider("Use W when >= number of minions", 3, 0, 10));
         }
 
         public bool LaneClearUseW
@@ -91,6 +200,7 @@ namespace BundledBuddies.Bundles.Annie
         }
         #endregion
 
+        #region Jungle Clear
         private void GenerateJungleClear()
         {
             JungleClear = Main.AddSubMenu("Jungle Clear", "jungle_clear");
@@ -98,6 +208,31 @@ namespace BundledBuddies.Bundles.Annie
             JungleClear.Add("jungle_clear_use_w", new CheckBox("Use W", true));
             JungleClear.Add("jungle_clear_use_e", new CheckBox("Use E", true));
         }
+
+        public bool JungleClearUseQWithoutLastHit
+        {
+            get
+            {
+                return (JungleClear["jungle_clear_use_q_without_last_hit"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public bool JungleClearUseW
+        {
+            get
+            {
+                return (JungleClear["jungle_clear_use_w"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public bool JungleClearUseE
+        {
+            get
+            {
+                return (JungleClear["jungle_clear_use_e"] as CheckBox).CurrentValue;
+            }
+        }
+        #endregion
 
         #region Last Hit
         private void GenerateLastHit()
@@ -115,10 +250,20 @@ namespace BundledBuddies.Bundles.Annie
         }
         #endregion
 
+        #region Flee
         private void GenerateFlee()
         {
             Flee = Main.AddSubMenu("Flee", "flee");
             Flee.Add("flee_use_q_stun", new CheckBox("Use Q to stun", true));
         }
+
+        public bool FleeUseQStun
+        {
+            get
+            {
+                return (Flee["flee_use_q_stun"] as CheckBox).CurrentValue;
+            }
+        }
+        #endregion
     }
 }
