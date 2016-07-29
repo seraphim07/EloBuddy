@@ -36,6 +36,9 @@ namespace BundledBuddies
                 case Champion.Ashe:
                     new BundledAshe();
                     break;
+                case Champion.Kayle:
+                    new BundledKayle();
+                    break;
             }
         }
     }
