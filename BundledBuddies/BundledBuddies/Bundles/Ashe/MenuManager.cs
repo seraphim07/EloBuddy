@@ -5,14 +5,16 @@ namespace BundledBuddies.Bundles.Ashe
 {
     class MenuManager : MenuManagerBase
     {
+        public Menu FireUlt;
+
         public MenuManager()
         {
             GenerateMain();
+            GenerateFireUlt();
             GenerateCombo();
             GenerateHarass();
             GenerateLaneClear();
             GenerateJungleClear();
-            GenerateLastHit();
             GenerateFlee();
 
             Initialize();
@@ -24,7 +26,23 @@ namespace BundledBuddies.Bundles.Ashe
             Main.AddGroupLabel("Welcome to Bundled Ashe!");
             Main.AddGroupLabel("Made by seraphim07");
         }
-        
+
+        #region Fire Ult
+        private void GenerateFireUlt()
+        {
+            FireUlt = Main.AddSubMenu("Fire Ult", "fire_ult");
+            FireUlt.Add("fire_ult_key", new KeyBind("Fire Ult", false, KeyBind.BindTypes.HoldActive, 'Z'));
+        }
+
+        public bool FireUltKey
+        {
+            get
+            {
+                return (FireUlt["fire_ult_key"] as KeyBind).CurrentValue;
+            }
+        }
+        #endregion
+
         #region Combo
         private void GenerateCombo()
         {
@@ -72,19 +90,15 @@ namespace BundledBuddies.Bundles.Ashe
         private void GenerateHarass()
         {
             Harass = Main.AddSubMenu("Harass", "harass");
-            Harass.Add("harass_use_w_stack_stun", new CheckBox("Use W to stack stun", true));
-            Harass.Add("harass_w_mana", new Slider("Use W when >= mana %", 50, 0, 100));
-            Harass.Add("harass_w_number", new Slider("Use W when >= number of minions", 3, 0, 10));
-            Harass.Add("harass_use_e_stack_stun", new CheckBox("Use E to stack stun", true));
-            Harass.Add("harass_use_q", new CheckBox("Use Q", true));
             Harass.Add("harass_use_w", new CheckBox("Use W", true));
+            Harass.Add("harass_w_mana", new Slider("Use W when >= mana %", 50, 0, 100));
         }
 
-        public bool HarassUseWStackStun
+        public bool HarassUseW
         {
             get
             {
-                return (Harass["harass_use_w_stack_stun"] as CheckBox).CurrentValue;
+                return (Harass["harass_use_w"] as CheckBox).CurrentValue;
             }
         }
 
@@ -95,47 +109,33 @@ namespace BundledBuddies.Bundles.Ashe
                 return (Harass["harass_w_mana"] as Slider).CurrentValue;
             }
         }
-
-        public int HarassWNumber
-        {
-            get
-            {
-                return (Harass["harass_w_number"] as Slider).CurrentValue;
-            }
-        }
-
-        public bool HarassUseEStackStun
-        {
-            get
-            {
-                return (Harass["harass_use_e_stack_stun"] as CheckBox).CurrentValue;
-            }
-        }
-
-        public bool HarassUseQ
-        {
-            get
-            {
-                return (Harass["harass_use_q"] as CheckBox).CurrentValue;
-            }
-        }
-
-        public bool HarassUseW
-        {
-            get
-            {
-                return (Harass["harass_use_w"] as CheckBox).CurrentValue;
-            }
-        }
         #endregion
 
         #region Lane Clear
         private void GenerateLaneClear()
         {
             LaneClear = Main.AddSubMenu("Lane Clear", "lane_clear");
+            LaneClear.Add("lane_clear_use_q", new CheckBox("Use Q", true));
+            LaneClear.Add("lane_clear_q_mana", new Slider("Use Q when >= mana %", 50, 0, 100));
             LaneClear.Add("lane_clear_use_w", new CheckBox("Use W", true));
             LaneClear.Add("lane_clear_w_mana", new Slider("Use W when >= mana %", 50, 0, 100));
             LaneClear.Add("lane_clear_w_number", new Slider("Use W when >= number of minions", 3, 0, 10));
+        }
+
+        public bool LaneClearUseQ
+        {
+            get
+            {
+                return (LaneClear["lane_clear_use_q"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public int LaneClearQMana
+        {
+            get
+            {
+                return (LaneClear["lane_clear_q_mana"] as Slider).CurrentValue;
+            }
         }
 
         public bool LaneClearUseW
@@ -167,16 +167,15 @@ namespace BundledBuddies.Bundles.Ashe
         private void GenerateJungleClear()
         {
             JungleClear = Main.AddSubMenu("Jungle Clear", "jungle_clear");
-            JungleClear.Add("jungle_clear_use_q_without_last_hit", new CheckBox("Use Q even when it's not last hit", true));
+            JungleClear.Add("jungle_clear_use_q", new CheckBox("Use Q", true));
             JungleClear.Add("jungle_clear_use_w", new CheckBox("Use W", true));
-            JungleClear.Add("jungle_clear_use_e", new CheckBox("Use E", true));
         }
 
-        public bool JungleClearUseQWithoutLastHit
+        public bool JungleClearUseQ
         {
             get
             {
-                return (JungleClear["jungle_clear_use_q_without_last_hit"] as CheckBox).CurrentValue;
+                return (JungleClear["jungle_clear_use_q"] as CheckBox).CurrentValue;
             }
         }
 
@@ -187,44 +186,20 @@ namespace BundledBuddies.Bundles.Ashe
                 return (JungleClear["jungle_clear_use_w"] as CheckBox).CurrentValue;
             }
         }
-
-        public bool JungleClearUseE
-        {
-            get
-            {
-                return (JungleClear["jungle_clear_use_e"] as CheckBox).CurrentValue;
-            }
-        }
         #endregion
-
-        #region Last Hit
-        private void GenerateLastHit()
-        {
-            LastHit = Main.AddSubMenu("Last Hit", "last_hit");
-            LastHit.Add("last_hit_use_q", new CheckBox("Use Q", true));
-        }
-
-        public bool LastHitUseQ
-        {
-            get
-            {
-                return (LastHit["last_hit_use_q"] as CheckBox).CurrentValue;
-            }
-        }
-        #endregion
-
+        
         #region Flee
         private void GenerateFlee()
         {
             Flee = Main.AddSubMenu("Flee", "flee");
-            Flee.Add("flee_use_q_stun", new CheckBox("Use Q to stun", true));
+            Flee.Add("flee_use_w", new CheckBox("Use W", true));
         }
 
-        public bool FleeUseQStun
+        public bool FleeUseW
         {
             get
             {
-                return (Flee["flee_use_q_stun"] as CheckBox).CurrentValue;
+                return (Flee["flee_use_w"] as CheckBox).CurrentValue;
             }
         }
         #endregion

@@ -57,8 +57,6 @@ namespace BundledBuddies.Bundles
             Circle.Draw(indianRed, spellManager.Q.Range, Player.Instance);
             Circle.Draw(mediumPurple, spellManager.W.Range, Player.Instance);
             Circle.Draw(darkRed, spellManager.R.Range, Player.Instance);
-
-            new Geometry.Polygon.Sector(Player.Instance.ServerPosition, Game.CursorPos, (35.0f + spellManager.W.ConeAngleDegrees) * (float)Math.PI / 180.0f, spellManager.W.Range).Draw(System.Drawing.Color.Yellow);
         }
 
         private void OnPreAttack(AttackableUnit target, Orbwalker.PreAttackArgs args)
@@ -84,17 +82,6 @@ namespace BundledBuddies.Bundles
 
         protected override void OnTickPermaActive()
         {
-            Geometry.Polygon.Sector test = new Geometry.Polygon.Sector(Player.Instance.ServerPosition, Game.CursorPos, (35.0f + spellManager.W.ConeAngleDegrees) * (float)Math.PI / 180.0f, spellManager.W.Range);
-
-            if (EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spellManager.W.Range).Count(x => test.IsInside(x)) > 0)
-            {
-                Console.WriteLine("TEST");
-            }
-            else
-            {
-                Console.WriteLine("NULL");
-            }
-
             if (menuManager.InitiatorKey)
             {
                 OnTickInitiator();
