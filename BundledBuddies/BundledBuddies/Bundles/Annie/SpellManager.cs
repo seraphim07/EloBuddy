@@ -19,6 +19,7 @@ namespace BundledBuddies.Bundles.Annie
         public SpellManager() : base()
         {
             SpellDataInst QData = Player.Instance.Spellbook.GetSpell(SpellSlot.Q);
+            Console.WriteLine("Q Range: " + QData.SData.CastRange);
             Q = new Spell.Targeted(SpellSlot.Q, Convert.ToUInt32(QData.SData.CastRange));
 
             SpellDataInst WData = Player.Instance.Spellbook.GetSpell(SpellSlot.W);

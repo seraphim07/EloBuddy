@@ -249,7 +249,7 @@ namespace BundledBuddies.Bundles
             if (spellManagerBase.Exhaust != null &&
                 spellManagerBase.Exhaust.IsReady())
             {
-                AIHeroClient target = TargetSelector.GetTarget(EntityManager.Heroes.Enemies.Where(x => x.Distance(Player.Instance) < spellManagerBase.Exhaust.Range && x.HealthPercent <= menuManagerBase.UseExhaustHp), primaryDamageType);
+                AIHeroClient target = TargetSelector.GetTarget(EntityManager.Heroes.Enemies.Where(x => spellManagerBase.Exhaust.IsInRange(x) && x.HealthPercent <= menuManagerBase.UseExhaustHp), primaryDamageType);
 
                 if (target != null)
                 {
@@ -264,14 +264,15 @@ namespace BundledBuddies.Bundles
                 spellManagerBase.Ignite.IsReady())
             {
                 AIHeroClient target = null;
+                AIHeroClient[] targets = EntityManager.Heroes.Enemies.Where(x => spellManagerBase.Ignite.IsInRange(x)).ToArray();
 
                 if (menuManagerBase.UseIgniteKillable)
                 {
-                    target = TargetSelector.GetTarget(EntityManager.Heroes.Enemies.Where(x => x.Distance(Player.Instance) < spellManagerBase.Ignite.Range && spellManagerBase.Ignite.GetHealthPrediction(x) <= 0.0f), primaryDamageType);
+                    target = TargetSelector.GetTarget(targets.Where(x => DamageLibrary.GetSummonerSpellDamage(Player.Instance, x, DamageLibrary.SummonerSpells.Ignite) >= x.Health), primaryDamageType);
                 }
                 else
                 {
-                    target = TargetSelector.GetTarget(EntityManager.Heroes.Enemies.Where(x => x.Distance(Player.Instance) < spellManagerBase.Ignite.Range && x.HealthPercent <= menuManagerBase.UseIgniteHp), primaryDamageType);
+                    target = TargetSelector.GetTarget(targets.Where(x => x.HealthPercent <= menuManagerBase.UseIgniteHp), primaryDamageType);
                 }
 
                 if (target != null)
