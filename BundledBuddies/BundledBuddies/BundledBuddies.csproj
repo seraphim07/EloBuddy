@@ -69,6 +69,9 @@
     <Compile Include="Bundles\Annie\BundledAnnie.cs" />
     <Compile Include="Bundles\Annie\MenuManager.cs" />
     <Compile Include="Bundles\Annie\SpellManager.cs" />
+    <Compile Include="Bundles\Ashe\BundledAshe.cs" />
+    <Compile Include="Bundles\Ashe\MenuManager.cs" />
+    <Compile Include="Bundles\Ashe\SpellManager.cs" />
     <Compile Include="Bundles\BundledBase.cs" />
     <Compile Include="Bundles\MenuManagerBase.cs" />
     <Compile Include="Bundles\SpellManagerBase.cs" />
