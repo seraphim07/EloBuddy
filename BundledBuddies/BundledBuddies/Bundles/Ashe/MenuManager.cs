@@ -115,11 +115,11 @@ namespace BundledBuddies.Bundles.Ashe
         private void GenerateLaneClear()
         {
             LaneClear = Main.AddSubMenu("Lane Clear", "lane_clear");
-            LaneClear.Add("lane_clear_use_q", new CheckBox("Use Q", true));
+            LaneClear.Add("lane_clear_use_q", new CheckBox("Use Q", false));
             LaneClear.Add("lane_clear_q_mana", new Slider("Use Q when >= mana %", 50, 0, 100));
             LaneClear.Add("lane_clear_use_w", new CheckBox("Use W", true));
-            LaneClear.Add("lane_clear_w_mana", new Slider("Use W when >= mana %", 50, 0, 100));
-            LaneClear.Add("lane_clear_w_number", new Slider("Use W when >= number of minions", 3, 0, 10));
+            LaneClear.Add("lane_clear_w_mana", new Slider("Use W when >= mana %", 80, 0, 100));
+            LaneClear.Add("lane_clear_w_number", new Slider("Use W when >= number of minions", 5, 0, 10));
         }
 
         public bool LaneClearUseQ
@@ -167,7 +167,7 @@ namespace BundledBuddies.Bundles.Ashe
         private void GenerateJungleClear()
         {
             JungleClear = Main.AddSubMenu("Jungle Clear", "jungle_clear");
-            JungleClear.Add("jungle_clear_use_q", new CheckBox("Use Q", true));
+            JungleClear.Add("jungle_clear_use_q", new CheckBox("Use Q", false));
             JungleClear.Add("jungle_clear_use_w", new CheckBox("Use W", true));
         }
 
