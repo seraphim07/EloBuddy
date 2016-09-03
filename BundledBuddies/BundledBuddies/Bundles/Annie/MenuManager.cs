@@ -171,7 +171,7 @@ namespace BundledBuddies.Bundles.Annie
         {
             LaneClear = Main.AddSubMenu("Lane Clear", "lane_clear");
             LaneClear.Add("lane_clear_use_w", new CheckBox("Use W", true));
-            LaneClear.Add("lane_clear_w_mana", new Slider("Use W when >= mana %", 50, 0, 100));
+            LaneClear.Add("lane_clear_w_mana", new Slider("Use W when >= mana %", 80, 0, 100));
             LaneClear.Add("lane_clear_w_number", new Slider("Use W when >= number of minions", 3, 0, 10));
         }
 
