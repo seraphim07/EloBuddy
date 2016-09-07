@@ -162,11 +162,11 @@ namespace BundledBuddies.Bundles
                 Player.Instance.ManaPercent >= menuManager.LaneClearWMana &&
                 spellManager.W.IsReady())
             {
-                Obj_AI_Minion[] minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spellManager.W.Range, false).OrderBy(x => x.Distance(Player.Instance.ServerPosition)).ToArray();
+                Obj_AI_Minion target = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spellManager.W.Range, false).OrderBy(x => x.Distance(Player.Instance.ServerPosition)).ElementAtOrDefault(0);
 
-                if (minions.Length > 0)
+                if (target != null)
                 {
-                    spellManager.W.Cast(minions[0]);
+                    spellManager.W.Cast(target);
                 }
             }
 
@@ -185,11 +185,11 @@ namespace BundledBuddies.Bundles
             if (menuManager.JungleClearUseW &&
                 spellManager.W.IsReady())
             {
-                Obj_AI_Minion[] jungleMonsters = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spellManager.W.Range, false).OrderBy(x => x.Distance(Player.Instance.ServerPosition)).ToArray();
+                Obj_AI_Minion target = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spellManager.W.Range, false).OrderBy(x => x.Distance(Player.Instance.ServerPosition)).ElementAtOrDefault(0);
                 
-                if (jungleMonsters.Length > 0)
+                if (target != null)
                 {
-                    spellManager.W.Cast(jungleMonsters[0]);
+                    spellManager.W.Cast(target);
                 }
             }
             

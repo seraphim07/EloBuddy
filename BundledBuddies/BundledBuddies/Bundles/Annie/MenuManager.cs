@@ -10,7 +10,6 @@ namespace BundledBuddies.Bundles.Annie
         public MenuManager()
         {
             GenerateMain();
-            GenerateInitiator();
             GenerateCombo();
             GenerateHarass();
             GenerateLaneClear();
@@ -27,40 +26,6 @@ namespace BundledBuddies.Bundles.Annie
             Main.AddGroupLabel("Welcome to Bundled Annie!");
             Main.AddGroupLabel("Made by seraphim07");
         }
-
-        #region Initiator
-        private void GenerateInitiator()
-        {
-            Initiator = Main.AddSubMenu("Initiator", "initiator");
-            Initiator.Add("initiator_key", new KeyBind("Initiator", false, KeyBind.BindTypes.HoldActive, 'Z'));
-            Initiator.Add("initiator_condition", new Slider("Initiate when >= enemies can be hit with R", 2, 1, 5));
-            Initiator.Add("initiator_initiate_when_stun", new CheckBox("Only initiate when you have stun", true));
-        }
-
-        public bool InitiatorKey
-        {
-            get
-            {
-                return (Initiator["initiator_key"] as KeyBind).CurrentValue;
-            }
-        }
-
-        public int InitiatorCondition
-        {
-            get
-            {
-                return (Initiator["initiator_condition"] as Slider).CurrentValue;
-            }
-        }
-
-        public bool InitiatorInitiateWhenStun
-        {
-            get
-            {
-                return (Initiator["initiator_initiate_when_stun"] as CheckBox).CurrentValue;
-            }
-        }
-        #endregion
 
         #region Combo
         private void GenerateCombo()
@@ -111,7 +76,6 @@ namespace BundledBuddies.Bundles.Annie
             Harass = Main.AddSubMenu("Harass", "harass");
             Harass.Add("harass_use_w_stack_stun", new CheckBox("Use W to stack stun", true));
             Harass.Add("harass_w_mana", new Slider("Use W when >= mana %", 50, 0, 100));
-            Harass.Add("harass_w_number", new Slider("Use W when >= number of minions", 3, 0, 10));
             Harass.Add("harass_use_e_stack_stun", new CheckBox("Use E to stack stun", true));
             Harass.Add("harass_use_q", new CheckBox("Use Q", true));
             Harass.Add("harass_use_w", new CheckBox("Use W", true));
@@ -132,15 +96,7 @@ namespace BundledBuddies.Bundles.Annie
                 return (Harass["harass_w_mana"] as Slider).CurrentValue;
             }
         }
-
-        public int HarassWNumber
-        {
-            get
-            {
-                return (Harass["harass_w_number"] as Slider).CurrentValue;
-            }
-        }
-
+        
         public bool HarassUseEStackStun
         {
             get
@@ -172,7 +128,6 @@ namespace BundledBuddies.Bundles.Annie
             LaneClear = Main.AddSubMenu("Lane Clear", "lane_clear");
             LaneClear.Add("lane_clear_use_w", new CheckBox("Use W", true));
             LaneClear.Add("lane_clear_w_mana", new Slider("Use W when >= mana %", 80, 0, 100));
-            LaneClear.Add("lane_clear_w_number", new Slider("Use W when >= number of minions", 3, 0, 10));
         }
 
         public bool LaneClearUseW
@@ -188,14 +143,6 @@ namespace BundledBuddies.Bundles.Annie
             get
             {
                 return (LaneClear["lane_clear_w_mana"] as Slider).CurrentValue;
-            }
-        }
-
-        public int LaneClearWNumber
-        {
-            get
-            {
-                return (LaneClear["lane_clear_w_number"] as Slider).CurrentValue;
             }
         }
         #endregion
