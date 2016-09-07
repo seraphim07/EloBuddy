@@ -1,9 +1,7 @@
 ﻿using BundledBuddies.Bundles.Ashe;
 using EloBuddy;
 using EloBuddy.SDK;
-using EloBuddy.SDK.Enumerations;
 using EloBuddy.SDK.Rendering;
-using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,11 +47,11 @@ namespace BundledBuddies.Bundles
                 menuManager.ComboUseW &&
                 spellManager.W.IsReady())
             {
-                Tuple<Vector3, int> bestW = GetWPos(EntityManager.Heroes.Enemies.Where(x => spellManager.W.IsInRange(x)).ToArray());
+                AIHeroClient selectedTarget = TargetSelector.GetTarget(spellManager.W.Range, primaryDamageType);
 
-                if (bestW.Item2 > 0)
+                if (target != null)
                 {
-                    spellManager.W.Cast(bestW.Item1);
+                    spellManager.W.Cast(selectedTarget);
                     Orbwalker.ResetAutoAttack();
                 }
             }
@@ -80,18 +78,11 @@ namespace BundledBuddies.Bundles
 
             if (spellManager.R.IsReady())
             {
-                AIHeroClient[] targets = EntityManager.Heroes.Enemies.Where(x => spellManager.R.IsInRange(x)).OrderBy(x => x.Distance(Player.Instance)).ToArray();
-
-                for (int i = 0; i < targets.Length; i++)
+                AIHeroClient target = TargetSelector.GetTarget(spellManager.R.Range, primaryDamageType);
+                
+                if (target != null)
                 {
-                    PredictionResult result = spellManager.R.GetPrediction(targets[i]);
-
-                    if (result.HitChance >= HitChance.High)
-                    {
-                        spellManager.R.Cast(result.CastPosition);
-
-                        return;
-                    }
+                    spellManager.R.Cast(target);
                 }
             }
         }
@@ -129,18 +120,11 @@ namespace BundledBuddies.Bundles
             if (menuManager.ComboUseR &&
                 spellManager.R.IsReady())
             {
-                AIHeroClient[] targets = EntityManager.Heroes.Enemies.Where(x => spellManager.W.IsInRange(x)).OrderBy(x => x.Distance(Player.Instance)).ToArray();
+                AIHeroClient target = TargetSelector.GetTarget(spellManager.W.Range, primaryDamageType);
 
-                for (int i = 0; i < targets.Length; i++)
+                if (target != null)
                 {
-                    PredictionResult result = spellManager.R.GetPrediction(targets[i]);
-
-                    if (result.HitChance >= HitChance.High)
-                    {
-                        spellManager.R.Cast(result.CastPosition);
-
-                        break;
-                    }
+                    spellManager.R.Cast(target);
                 }
             }
 
@@ -153,11 +137,11 @@ namespace BundledBuddies.Bundles
                 Player.Instance.ManaPercent >= menuManager.HarassWMana &&
                 spellManager.W.IsReady())
             {
-                Tuple<Vector3, int> bestW = GetWPos(EntityManager.Heroes.Enemies.Where(x => spellManager.W.IsInRange(x)).ToArray());
+                AIHeroClient target = TargetSelector.GetTarget(spellManager.W.Range, primaryDamageType);
 
-                if (bestW.Item2 > 0)
+                if (target != null)
                 {
-                    spellManager.W.Cast(bestW.Item1);
+                    spellManager.W.Cast(target);
                 }
             }
             
@@ -178,11 +162,11 @@ namespace BundledBuddies.Bundles
                 Player.Instance.ManaPercent >= menuManager.LaneClearWMana &&
                 spellManager.W.IsReady())
             {
-                Tuple<Vector3, int> bestW = GetWPos(EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spellManager.W.Range, false).ToArray());
+                Obj_AI_Minion[] minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spellManager.W.Range, false).OrderBy(x => x.Distance(Player.Instance.ServerPosition)).ToArray();
 
-                if (bestW.Item2 >= menuManager.LaneClearWNumber)
+                if (minions.Length > 0)
                 {
-                    spellManager.W.Cast(bestW.Item1);
+                    spellManager.W.Cast(minions[0]);
                 }
             }
 
@@ -201,11 +185,11 @@ namespace BundledBuddies.Bundles
             if (menuManager.JungleClearUseW &&
                 spellManager.W.IsReady())
             {
-                Tuple<Vector3, int> bestW = GetWPos(EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spellManager.W.Range, false).ToArray());
-
-                if (bestW.Item2 > 0)
+                Obj_AI_Minion[] jungleMonsters = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spellManager.W.Range, false).OrderBy(x => x.Distance(Player.Instance.ServerPosition)).ToArray();
+                
+                if (jungleMonsters.Length > 0)
                 {
-                    spellManager.W.Cast(bestW.Item1);
+                    spellManager.W.Cast(jungleMonsters[0]);
                 }
             }
             
@@ -222,41 +206,15 @@ namespace BundledBuddies.Bundles
             if (menuManager.FleeUseW &&
                 spellManager.W.IsReady())
             {
-                Tuple<Vector3, int> bestW = GetWPos(EntityManager.Heroes.Enemies.Where(x => spellManager.W.IsInRange(x)).ToArray());
-
-                if (bestW.Item2 > 0)
+                AIHeroClient target = TargetSelector.GetTarget(spellManager.W.Range, primaryDamageType);
+                
+                if (target != null)
                 {
-                    spellManager.W.Cast(bestW.Item1);
+                    spellManager.W.Cast(target);
                 }
             }
             
             base.OnTickFlee();
-        }
-        
-        private Tuple<Vector3, int> GetWPos(Obj_AI_Base[] targets)
-        {
-            Vector3 targetPosition = new Vector3();
-            int maxNum = 0;
-
-            for (int i = -300; i <= 300; i += 100)
-            {
-                for (int j = -300; j <= 300; j += 100)
-                {
-                    if (i.Equals(0) && j.Equals(0)) continue;
-
-                    Vector3 testPosition = new Vector3(Player.Instance.ServerPosition.X + i, Player.Instance.ServerPosition.Y + j, Player.Instance.ServerPosition.Z);
-                    Geometry.Polygon.Sector wSector = spellManager.WSector(testPosition);
-                    int count = targets.Count(x => wSector.IsInside(x));
-
-                    if (count > maxNum)
-                    {
-                        targetPosition = testPosition;
-                        maxNum = count;
-                    }
-                }
-            }
-
-            return new Tuple<Vector3, int>(targetPosition, maxNum);
         }
     }
 }
