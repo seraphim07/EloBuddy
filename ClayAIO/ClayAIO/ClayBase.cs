@@ -1,6 +1,6 @@
 ﻿using EloBuddy;
 using EloBuddy.SDK;
-using SharpDX;
+using EloBuddy.SDK.Events;
 using System;
 using System.Linq;
 
@@ -8,28 +8,17 @@ namespace ClayAIO
 {
     class ClayBase
     {
-        protected ColorBGRA indianRed;
-        protected ColorBGRA mediumPurple;
-        protected ColorBGRA darkRed;
-        protected ColorBGRA darkBlue;
-
         protected MenuManagerBase menuManagerBase;
         protected SpellManagerBase spellManagerBase;
 
         protected DamageType primaryDamageType;
-
-        public ClayBase()
-        {
-            indianRed = new ColorBGRA(Color.IndianRed.R, Color.IndianRed.G, Color.IndianRed.B, 127);
-            mediumPurple = new ColorBGRA(Color.MediumPurple.R, Color.MediumPurple.G, Color.MediumPurple.B, 127);
-            darkRed = new ColorBGRA(Color.DarkRed.R, Color.DarkRed.G, Color.DarkRed.B, 127);
-            darkBlue = new ColorBGRA(Color.DarkBlue.R, Color.DarkBlue.G, Color.DarkBlue.B, 127);
-        }
-
+        
         protected void Initialize()
         {
             Game.OnTick += OnTick;
             Obj_AI_Base.OnLevelUp += OnLevelUp;
+            Gapcloser.OnGapcloser += OnGapcloser;
+            Interrupter.OnInterruptableSpell += OnInterruptableSpell;
         }
 
         private void OnLevelUp(Obj_AI_Base sender, Obj_AI_BaseLevelUpEventArgs e)
@@ -65,18 +54,12 @@ namespace ClayAIO
                 UseOffensiveItems();
 
                 if (menuManagerBase.UseHealCombo) UseHeal();
-                if (menuManagerBase.UseBarrierCombo) UseBarrier();
-                if (menuManagerBase.UseExhaust) UseExhaust();
-                if (menuManagerBase.UseIgnite) UseIgnite();
 
                 OnTickCombo();
             }
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass))
             {
-                if (menuManagerBase.UseHealHarass) UseHeal();
-                if (menuManagerBase.UseBarrierHarass) UseBarrier();
-
                 OnTickHarass();
             }
 
@@ -98,8 +81,6 @@ namespace ClayAIO
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
             {
                 if (menuManagerBase.UseHealFlee) UseHeal();
-                if (menuManagerBase.UseBarrierFlee) UseBarrier();
-                if (menuManagerBase.UseGhostFlee) spellManagerBase.Ghost.Cast();
 
                 OnTickFlee();
             }
@@ -115,6 +96,9 @@ namespace ClayAIO
                 Core.DelayAction(() => spellManagerBase.Cleanse.Cast(), 500);
             }
         }
+
+        protected virtual void OnGapcloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e) { }
+        protected virtual void OnInterruptableSpell(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs e) { }
 
         protected virtual void OnTickCombo() { }
         protected virtual void OnTickHarass() { }
@@ -218,67 +202,12 @@ namespace ClayAIO
 
         private void UseHeal()
         {
-            if (spellManagerBase.Heal != null && spellManagerBase.Heal.IsReady())
+            if (spellManagerBase.Heal != null &&
+                spellManagerBase.Heal.IsReady() &&
+                Player.Instance.HealthPercent <= menuManagerBase.UseHealHp &&
+                EntityManager.Heroes.Enemies.Count(x => x.Distance(Player.Instance.ServerPosition) <= 1000) > 0)
             {
-                bool useHeal = Player.Instance.HealthPercent <= menuManagerBase.UseHealHp;
-
-                if (menuManagerBase.UseHealAlly)
-                {
-                    useHeal |= EntityManager.Heroes.Allies.FirstOrDefault(x => x.Distance(Player.Instance) < 850 && x.HealthPercent <= menuManagerBase.UseHealAllyHp) != null;
-                }
-
-                if (useHeal)
-                {
-                    spellManagerBase.Heal.Cast();
-                }
-            }
-        }
-
-        private void UseBarrier()
-        {
-            if (spellManagerBase.Barrier != null &&
-                spellManagerBase.Barrier.IsReady() &&
-                Player.Instance.HealthPercent <= menuManagerBase.UseBarrierHp)
-            {
-                spellManagerBase.Barrier.Cast();
-            }
-        }
-
-        private void UseExhaust()
-        {
-            if (spellManagerBase.Exhaust != null &&
-                spellManagerBase.Exhaust.IsReady())
-            {
-                AIHeroClient target = TargetSelector.GetTarget(EntityManager.Heroes.Enemies.Where(x => spellManagerBase.Exhaust.IsInRange(x) && x.HealthPercent <= menuManagerBase.UseExhaustHp), primaryDamageType);
-
-                if (target != null)
-                {
-                    spellManagerBase.Exhaust.Cast(target);
-                }
-            }
-        }
-
-        private void UseIgnite()
-        {
-            if (spellManagerBase.Ignite != null &&
-                spellManagerBase.Ignite.IsReady())
-            {
-                AIHeroClient target = null;
-                AIHeroClient[] targets = EntityManager.Heroes.Enemies.Where(x => spellManagerBase.Ignite.IsInRange(x)).ToArray();
-
-                if (menuManagerBase.UseIgniteKillable)
-                {
-                    target = TargetSelector.GetTarget(targets.Where(x => DamageLibrary.GetSummonerSpellDamage(Player.Instance, x, DamageLibrary.SummonerSpells.Ignite) >= x.Health), primaryDamageType);
-                }
-                else
-                {
-                    target = TargetSelector.GetTarget(targets.Where(x => x.HealthPercent <= menuManagerBase.UseIgniteHp), primaryDamageType);
-                }
-
-                if (target != null)
-                {
-                    spellManagerBase.Ignite.Cast(target);
-                }
+                spellManagerBase.Heal.Cast();
             }
         }
     }
