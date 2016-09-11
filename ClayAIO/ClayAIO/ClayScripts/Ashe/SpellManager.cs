@@ -39,7 +39,16 @@ namespace ClayAIO.ClayScripts
         
         public bool CastWToHero()
         {
-            return CastMissileLineToHero(SpellSlot.W, WInfo);
+            AIHeroClient target = TargetSelector.GetTarget(WInfo.Range + WInfo.Radius * 2, DamageType.Physical);
+
+            if (target != null)
+            {
+                Player.Instance.Spellbook.CastSpell(SpellSlot.W, target.ServerPosition);
+
+                return true;
+            }
+
+            return false;
         }
 
         public bool CastWToJungle()
@@ -69,19 +78,17 @@ namespace ClayAIO.ClayScripts
             }
         }
 
-        private bool CastMissileLineToHero(SpellSlot spellSlot, SpellInfo spellInfo)
+        private void CastMissileLineToHero(SpellSlot spellSlot, SpellInfo spellInfo)
         {
             AIHeroClient target = TargetSelector.GetTarget(WInfo.Range + WInfo.Radius * 2, DamageType.Physical);
 
             if (target != null)
             {
-                return CastMissileLineToHero(spellSlot, spellInfo, target);
+                CastMissileLineToHero(spellSlot, spellInfo, target);
             }
-
-            return false;
         }
 
-        private bool CastMissileLineToHero(SpellSlot spellSlot, SpellInfo spellInfo, AIHeroClient target)
+        private void CastMissileLineToHero(SpellSlot spellSlot, SpellInfo spellInfo, AIHeroClient target)
         {
             Prediction.Manager.PredictionInput predictionInput = new Prediction.Manager.PredictionInput()
             {
@@ -104,11 +111,7 @@ namespace ClayAIO.ClayScripts
             if (predictionOutput.HitChancePercent >= minHitChancePercent)
             {
                 Player.Instance.Spellbook.CastSpell(spellSlot, predictionOutput.CastPosition);
-
-                return true;
             }
-
-            return false;
         }
     }
 }
