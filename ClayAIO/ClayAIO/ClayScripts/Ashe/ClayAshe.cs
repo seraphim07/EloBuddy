@@ -97,7 +97,8 @@ namespace ClayAIO.ClayScripts
 
         protected override void OnTickCombo()
         {
-            if (menuManager.ComboUseE)
+            if (menuManager.ComboUseE &&
+                Player.Instance.Spellbook.CanUseSpell(SpellSlot.E) == SpellState.Ready)
             {
                 foreach (AIHeroClient target in comboTargets)
                 {

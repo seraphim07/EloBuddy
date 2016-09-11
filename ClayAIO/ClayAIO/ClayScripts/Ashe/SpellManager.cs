@@ -31,7 +31,8 @@ namespace ClayAIO.ClayScripts
 
         public void CastQ(IEnumerable<Obj_AI_Base> targets)
         {
-            if (targets.Count(x => Player.Instance.IsInAutoAttackRange(x)) > 0)
+            if (Player.Instance.Spellbook.CanUseSpell(SpellSlot.Q) == SpellState.Ready &&
+                targets.Count(x => Player.Instance.IsInAutoAttackRange(x)) > 0)
             {
                 Player.Instance.Spellbook.CastSpell(SpellSlot.Q);
             }
@@ -39,13 +40,16 @@ namespace ClayAIO.ClayScripts
         
         public bool CastWToHero()
         {
-            AIHeroClient target = TargetSelector.GetTarget(WInfo.Range + WInfo.Radius * 2, DamageType.Physical);
-
-            if (target != null)
+            if (Player.Instance.Spellbook.CanUseSpell(SpellSlot.W) == SpellState.Ready)
             {
-                Player.Instance.Spellbook.CastSpell(SpellSlot.W, target.ServerPosition);
+                AIHeroClient target = TargetSelector.GetTarget(WInfo.Range + WInfo.Radius * 2, DamageType.Physical);
 
-                return true;
+                if (target != null)
+                {
+                    Player.Instance.Spellbook.CastSpell(SpellSlot.W, target.ServerPosition);
+
+                    return true;
+                }
             }
 
             return false;
@@ -53,13 +57,16 @@ namespace ClayAIO.ClayScripts
 
         public bool CastWToJungle()
         {
-            Obj_AI_Minion target = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, WInfo.Range + WInfo.Radius * 2).ElementAtOrDefault(0);
-
-            if (target != null)
+            if (Player.Instance.Spellbook.CanUseSpell(SpellSlot.W) == SpellState.Ready)
             {
-                Player.Instance.Spellbook.CastSpell(SpellSlot.W, target.ServerPosition);
+                Obj_AI_Minion target = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, WInfo.Range + WInfo.Radius * 2).ElementAtOrDefault(0);
 
-                return true;
+                if (target != null)
+                {
+                    Player.Instance.Spellbook.CastSpell(SpellSlot.W, target.ServerPosition);
+
+                    return true;
+                }
             }
 
             return false;
@@ -67,12 +74,16 @@ namespace ClayAIO.ClayScripts
         
         public void CastRToHero()
         {
-            CastMissileLineToHero(SpellSlot.R, RInfo);
+            if (Player.Instance.Spellbook.CanUseSpell(SpellSlot.R) == SpellState.Ready)
+            {
+                CastMissileLineToHero(SpellSlot.R, RInfo);
+            }
         }
         
         public void CastRToTarget()
         {
-            if (TargetSelector.SelectedTarget != null)
+            if (Player.Instance.Spellbook.CanUseSpell(SpellSlot.R) == SpellState.Ready &&
+                TargetSelector.SelectedTarget != null)
             {
                 CastMissileLineToHero(SpellSlot.R, RInfo, TargetSelector.SelectedTarget);
             }
