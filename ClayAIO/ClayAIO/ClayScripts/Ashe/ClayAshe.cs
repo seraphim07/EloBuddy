@@ -28,8 +28,17 @@ namespace ClayAIO.ClayScripts
 
             Drawing.OnDraw += spellManager.OnDraw;
             Orbwalker.OnPostAttack += OnPostAttack;
+            Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             
             Chat.Print("ClayAshe loaded!");
+        }
+
+        private void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs e)
+        {
+            if (sender.IsMe && e.Slot == SpellSlot.W)
+            {
+                Orbwalker.ResetAutoAttack();
+            }
         }
 
         private void OnPostAttack(AttackableUnit target, EventArgs e)
@@ -37,29 +46,20 @@ namespace ClayAIO.ClayScripts
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) &&
                 menuManager.ComboUseW)
             {
-                if (spellManager.CastWToHero())
-                {
-                    Orbwalker.ResetAutoAttack();
-                }
+                spellManager.CastWToHero();
             }
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass) &&
                 menuManager.HarassUseW &&
                 Player.Instance.ManaPercent >= menuManager.HarassWMana)
             {
-                if (spellManager.CastWToHero())
-                {
-                    Orbwalker.ResetAutoAttack();
-                }
+                spellManager.CastWToHero();
             }
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear) &&
                 menuManager.JungleClearUseW)
             {
-                if (spellManager.CastWToJungle())
-                {
-                    Orbwalker.ResetAutoAttack();
-                }
+                spellManager.CastWToJungle();
             }
         }
 

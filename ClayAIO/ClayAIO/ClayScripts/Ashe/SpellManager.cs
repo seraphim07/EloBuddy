@@ -38,7 +38,7 @@ namespace ClayAIO.ClayScripts
             }
         }
         
-        public bool CastWToHero()
+        public void CastWToHero()
         {
             if (Player.Instance.Spellbook.CanUseSpell(SpellSlot.W) == SpellState.Ready)
             {
@@ -47,15 +47,11 @@ namespace ClayAIO.ClayScripts
                 if (target != null)
                 {
                     Player.Instance.Spellbook.CastSpell(SpellSlot.W, target.ServerPosition);
-
-                    return true;
                 }
             }
-
-            return false;
         }
 
-        public bool CastWToJungle()
+        public void CastWToJungle()
         {
             if (Player.Instance.Spellbook.CanUseSpell(SpellSlot.W) == SpellState.Ready)
             {
@@ -64,12 +60,8 @@ namespace ClayAIO.ClayScripts
                 if (target != null)
                 {
                     Player.Instance.Spellbook.CastSpell(SpellSlot.W, target.ServerPosition);
-
-                    return true;
                 }
             }
-
-            return false;
         }
         
         public void CastRToHero()
