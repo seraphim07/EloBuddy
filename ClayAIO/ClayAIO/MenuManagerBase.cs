@@ -12,6 +12,7 @@ namespace ClayAIO
         public Menu Main, Combo, Harass, LaneClear, JungleClear, LastHit, Flee, Misc;
 
         protected Dictionary<string, int> SkinDictionary;
+        private Dictionary<int, int> SkinIndexID;
 
         protected void Initialize()
         {
@@ -38,11 +39,10 @@ namespace ClayAIO
 
         private void SkinOnValueChange(ValueBase<int> sender, ValueBase<int>.ValueChangeArgs e)
         {
-            Chat.Print("Selected Text: " + (sender as ComboBox).SelectedText);
             Chat.Print("CurrentValue: " + (sender as ComboBox).CurrentValue);
-            Chat.Print("Skin ID: " + SkinDictionary[(sender as ComboBox).SelectedText]);
+            Chat.Print("Skin ID: " + SkinIndexID[(sender as ComboBox).CurrentValue]);
 
-            Player.SetSkinId(SkinDictionary[(sender as ComboBox).SelectedText]);
+            Player.SetSkinId(SkinIndexID[(sender as ComboBox).CurrentValue]);
         }
         
         private void GenerateMiscMenu()
@@ -74,7 +74,15 @@ namespace ClayAIO
                 Misc.Add("misc_use_cleanse", new CheckBox("Use Cleanse", true));
             }
 
-            ComboBox MiscSkin = Misc.Add("misc_skin", new ComboBox("Choose skin to use", 0, SkinDictionary.Keys.ToArray()));
+            string[] SkinNames = SkinDictionary.Keys.ToArray();
+            SkinIndexID = new Dictionary<int, int>();
+
+            for (int i = 0; i < SkinNames.Length; i++)
+            {
+                SkinIndexID.Add(i, SkinDictionary[SkinNames[i]]);
+            }
+
+            ComboBox MiscSkin = Misc.Add("misc_skin", new ComboBox("Choose skin to use", 0, SkinNames));
             MiscSkin.OnValueChange += SkinOnValueChange;
         }
 
