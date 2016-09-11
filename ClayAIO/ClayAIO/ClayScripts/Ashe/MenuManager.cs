@@ -12,12 +12,13 @@ namespace ClayAIO.ClayScripts
         {
             SkinDictionary = new Dictionary<string, int>();
             SkinDictionary.Add("Classic", 0);
-            SkinDictionary.Add("Sherwood Forest Ashe", 1);
-            SkinDictionary.Add("Woad Ashe", 2);
-            SkinDictionary.Add("Amethyst Ashe", 3);
-            SkinDictionary.Add("Heartseeker Ashe", 4);
-            SkinDictionary.Add("Marauder Ashe", 5);
-            SkinDictionary.Add("PROJECT: Ashe", 6);
+            SkinDictionary.Add("Freljord Ashe (Legacy)", 1);
+            SkinDictionary.Add("Sherwood Forest Ashe", 2);
+            SkinDictionary.Add("Woad Ashe", 3);
+            SkinDictionary.Add("Amethyst Ashe", 4);
+            SkinDictionary.Add("Heartseeker Ashe", 5);
+            SkinDictionary.Add("Marauder Ashe", 6);
+            SkinDictionary.Add("PROJECT: Ashe", 7);
 
             GenerateMain();
             GenerateFireUlt();
