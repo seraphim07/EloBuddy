@@ -2,6 +2,7 @@
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ClayAIO
@@ -9,6 +10,8 @@ namespace ClayAIO
     class MenuManagerBase
     {
         public Menu Main, Combo, Harass, LaneClear, JungleClear, LastHit, Flee, Misc;
+
+        protected Dictionary<string, int> SkinDictionary;
 
         protected void Initialize()
         {
@@ -32,6 +35,11 @@ namespace ClayAIO
                 c.CurrentValue = possibleValues.First(possibleValue => !possibleValue.Equals((sender as ComboBox).CurrentValue) && !possibleValue.Equals(otherBox.CurrentValue));
             }
         }
+
+        private void SkinOnValueChange(ValueBase<int> sender, ValueBase<int>.ValueChangeArgs e)
+        {
+            Player.SetSkinId(SkinDictionary[(sender as ComboBox).SelectedText]);
+        }
         
         private void GenerateMiscMenu()
         {
@@ -49,7 +57,7 @@ namespace ClayAIO
             Misc.Add("misc_use_botrk", new CheckBox("Use Blade of the Ruined King", true));
             Misc.Add("misc_use_potion", new CheckBox("Use Potions", true));
             Misc.Add("misc_use_potion_hp", new Slider("Use potion when <= hp %", 50, 0, 100));
-
+            
             if (Player.Instance.GetSpellSlotFromName(SpellManagerBase.NAME_HEAL) != SpellSlot.Unknown)
             {
                 Misc.Add("misc_use_heal_combo", new CheckBox("Use Heal during Combo mode", true));
@@ -61,6 +69,9 @@ namespace ClayAIO
             {
                 Misc.Add("misc_use_cleanse", new CheckBox("Use Cleanse", true));
             }
+
+            ComboBox MiscSkin = Misc.Add("misc_skin", new ComboBox("Choose skin to use", 0, SkinDictionary.Keys.ToArray()));
+            MiscSkin.OnValueChange += SkinOnValueChange;
         }
 
         #region Auto Skill Accessors

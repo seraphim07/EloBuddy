@@ -1,5 +1,6 @@
 ﻿using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
+using System.Collections.Generic;
 
 namespace ClayAIO.ClayScripts
 {
@@ -9,6 +10,15 @@ namespace ClayAIO.ClayScripts
 
         public MenuManager()
         {
+            SkinDictionary = new Dictionary<string, int>();
+            SkinDictionary.Add("Classic", 0);
+            SkinDictionary.Add("Sherwood Forest Ashe", 1);
+            SkinDictionary.Add("Woad Ashe", 2);
+            SkinDictionary.Add("Amethyst Ashe", 3);
+            SkinDictionary.Add("Heartseeker Ashe", 4);
+            SkinDictionary.Add("Marauder Ashe", 5);
+            SkinDictionary.Add("PROJECT: Ashe", 6);
+
             GenerateMain();
             GenerateFireUlt();
             GenerateCombo();
