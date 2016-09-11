@@ -37,8 +37,6 @@ namespace ClayAIO.ClayScripts
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) &&
                 menuManager.ComboUseW)
             {
-                Chat.Print("Combo W!");
-
                 if (spellManager.CastWToHero())
                 {
                     Orbwalker.ResetAutoAttack();

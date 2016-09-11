@@ -100,12 +100,7 @@ namespace ClayAIO.ClayScripts
             }
 
             Prediction.Manager.PredictionOutput predictionOutput = Prediction.Position.GetPrediction(predictionInput);
-
-            if (spellInfo.Slot == SpellSlot.W)
-            {
-                Chat.Print(predictionOutput.HitChancePercent);
-            }
-
+            
             if (predictionOutput.HitChancePercent >= minHitChancePercent)
             {
                 Player.Instance.Spellbook.CastSpell(spellSlot, predictionOutput.CastPosition);
