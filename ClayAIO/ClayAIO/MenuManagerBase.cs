@@ -39,6 +39,7 @@ namespace ClayAIO
         private void SkinOnValueChange(ValueBase<int> sender, ValueBase<int>.ValueChangeArgs e)
         {
             Chat.Print("Selected Text: " + (sender as ComboBox).SelectedText);
+            Chat.Print("CurrentValue: " + (sender as ComboBox).CurrentValue);
             Chat.Print("Skin ID: " + SkinDictionary[(sender as ComboBox).SelectedText]);
 
             Player.SetSkinId(SkinDictionary[(sender as ComboBox).SelectedText]);
