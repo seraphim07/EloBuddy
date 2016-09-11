@@ -11,8 +11,6 @@ namespace ClayAIO.ClayScripts
 {
     class SpellManager : SpellManagerBase
     {
-        private float minHitChancePercent = 60.0f;
-
         private SpellInfo WInfo;
         private SpellInfo RInfo;
         
@@ -111,7 +109,7 @@ namespace ClayAIO.ClayScripts
 
             Prediction.Manager.PredictionOutput predictionOutput = Prediction.Position.GetPrediction(predictionInput);
             
-            if (predictionOutput.HitChancePercent >= minHitChancePercent)
+            if (predictionOutput.HitChance >= HitChance.Medium)
             {
                 Player.Instance.Spellbook.CastSpell(spellSlot, predictionOutput.CastPosition);
             }
