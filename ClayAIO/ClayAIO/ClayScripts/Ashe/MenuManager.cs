@@ -2,7 +2,7 @@
 using EloBuddy.SDK.Menu.Values;
 using System.Collections.Generic;
 
-namespace ClayAIO.ClayScripts
+namespace ClayAIO.ClayScripts.Ashe
 {
     class MenuManager : MenuManagerBase
     {

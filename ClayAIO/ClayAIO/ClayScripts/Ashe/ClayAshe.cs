@@ -4,10 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using EloBuddy.SDK.Events;
+using ClayAIO.ClayScripts.Ashe;
 
 namespace ClayAIO.ClayScripts
 {
-    partial class ClayAshe : ClayBase
+    class ClayAshe : ClayBase
     {
         private MenuManager menuManager;
         private SpellManager spellManager;

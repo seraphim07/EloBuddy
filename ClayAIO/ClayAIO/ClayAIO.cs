@@ -19,6 +19,9 @@ namespace ClayAIO
                 case Champion.Ashe:
                     new ClayAshe();
                     break;
+                case Champion.Tryndamere:
+                    new ClayTryndamere();
+                    break;
             }
         }
     }

@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ClayAIO.ClayScripts
+namespace ClayAIO.ClayScripts.Ashe
 {
     class SpellManager : SpellManagerBase
     {
