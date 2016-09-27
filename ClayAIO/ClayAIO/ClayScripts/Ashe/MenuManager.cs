@@ -22,6 +22,7 @@ namespace ClayAIO.ClayScripts.Ashe
             SkinDictionary.Add("PROJECT: Ashe", 8);
 
             GenerateMain();
+            GenerateGapCloser();
             GenerateFireUlt();
             GenerateCombo();
             GenerateHarass();
@@ -38,6 +39,31 @@ namespace ClayAIO.ClayScripts.Ashe
             Main.AddGroupLabel("Welcome to ClayAshe!");
             Main.AddGroupLabel("Made by seraphim07");
         }
+
+        #region Gap Closer
+        private void GenerateGapCloser()
+        {
+            GapCloser = Main.AddSubMenu("Gap Closer", "gap_closer");
+            GapCloser.Add("gap_closer_use_w", new CheckBox("Use W on enemy gap closer", true));
+            GapCloser.Add("gap_closer_use_r", new CheckBox("Use R on enemy gap closer", true));
+        }
+
+        public bool GapCloserUseW
+        {
+            get
+            {
+                return (GapCloser["gap_closer_use_w"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public bool GapCloserUseR
+        {
+            get
+            {
+                return (GapCloser["gap_closer_use_r"] as CheckBox).CurrentValue;
+            }
+        }
+        #endregion
 
         #region Fire Ult
         private void GenerateFireUlt()
@@ -134,7 +160,7 @@ namespace ClayAIO.ClayScripts.Ashe
         private void GenerateJungleClear()
         {
             JungleClear = Main.AddSubMenu("Jungle Clear", "jungle_clear");
-            JungleClear.Add("jungle_clear_use_q", new CheckBox("Use Q", false));
+            JungleClear.Add("jungle_clear_use_q", new CheckBox("Use Q", true));
             JungleClear.Add("jungle_clear_use_w", new CheckBox("Use W", true));
         }
 

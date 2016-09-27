@@ -9,7 +9,7 @@ namespace ClayAIO
 {
     class MenuManagerBase
     {
-        public Menu Main, Combo, Harass, LaneClear, JungleClear, LastHit, Flee, Misc;
+        public Menu Main, GapCloser, Combo, Harass, LaneClear, JungleClear, LastHit, Flee, Misc;
 
         protected Dictionary<string, int> SkinDictionary;
         private Dictionary<int, int> SkinIndexID;

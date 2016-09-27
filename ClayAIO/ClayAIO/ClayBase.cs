@@ -204,8 +204,7 @@ namespace ClayAIO
         {
             if (spellManagerBase.Heal != null &&
                 spellManagerBase.Heal.IsReady() &&
-                Player.Instance.HealthPercent <= menuManagerBase.UseHealHp &&
-                EntityManager.Heroes.Enemies.Count(x => x.Distance(Player.Instance.ServerPosition) <= 1000) > 0)
+                Player.Instance.HealthPercent <= menuManagerBase.UseHealHp)
             {
                 spellManagerBase.Heal.Cast();
             }

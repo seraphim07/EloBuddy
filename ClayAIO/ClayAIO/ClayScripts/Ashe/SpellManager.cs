@@ -2,7 +2,6 @@
 using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
 using EloBuddy.SDK.Rendering;
-using EloBuddy.SDK.Spells;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,20 +10,48 @@ namespace ClayAIO.ClayScripts.Ashe
 {
     class SpellManager : SpellManagerBase
     {
-        private SpellInfo WInfo;
-        private SpellInfo RInfo;
+        public Spell.Active Q;
+        public Spell.Skillshot W;
+        public Spell.Skillshot E;
+        public Spell.Skillshot R;
         
         public SpellManager() : base()
         {
-            List<SpellInfo> spellInfoList = SpellDatabase.GetSpellInfoList(Player.Instance);
+            Q = new Spell.Active(SpellSlot.Q);
 
-            WInfo = spellInfoList.First(x => x.Slot == SpellSlot.W);
-            RInfo = spellInfoList.First(x => x.Slot == SpellSlot.R);
+            SpellData WData = Player.Instance.Spellbook.GetSpell(SpellSlot.W).SData;
+            W = new Spell.Skillshot(
+                SpellSlot.W,
+                Convert.ToUInt32(WData.CastConeDistance),
+                SkillShotType.Cone,
+                Convert.ToInt32(WData.CastTime) * 1000,
+                Convert.ToInt32(WData.MissileSpeed))
+            {
+                ConeAngleDegrees = Convert.ToInt32(WData.CastConeAngle)
+            };
+            
+            SpellData EData = Player.Instance.Spellbook.GetSpell(SpellSlot.E).SData;
+            E = new Spell.Skillshot(
+                SpellSlot.E,
+                Convert.ToUInt32(EData.CastRange),
+                SkillShotType.Linear,
+                Convert.ToInt32(EData.CastTime) * 1000,
+                Convert.ToInt32(EData.MissileSpeed),
+                Convert.ToInt32(EData.LineWidth));
+
+            SpellData RData = Player.Instance.Spellbook.GetSpell(SpellSlot.R).SData;
+            R = new Spell.Skillshot(
+                SpellSlot.R,
+                Convert.ToUInt32(RData.CastRange),
+                SkillShotType.Linear,
+                Convert.ToInt32(RData.CastTime) * 1000,
+                Convert.ToInt32(RData.MissileSpeed),
+                Convert.ToInt32(RData.LineWidth));
         }
 
         public void OnDraw(EventArgs e)
         {
-            Circle.Draw(indianRed, WInfo.Range + WInfo.Radius * 2, Player.Instance);
+            Circle.Draw(indianRed, W.Range, Player.Instance);
         }
 
         public void CastQ(IEnumerable<Obj_AI_Base> targets)
@@ -38,80 +65,88 @@ namespace ClayAIO.ClayScripts.Ashe
         
         public void CastWToHero()
         {
-            if (Player.Instance.Spellbook.CanUseSpell(SpellSlot.W) == SpellState.Ready)
+            if (W.IsReady())
             {
-                AIHeroClient target = TargetSelector.GetTarget(WInfo.Range + WInfo.Radius * 2, DamageType.Physical);
+                AIHeroClient target = TargetSelector.GetTarget(W.Range, DamageType.Physical);
 
                 if (target != null)
                 {
-                    Player.Instance.Spellbook.CastSpell(SpellSlot.W, target.ServerPosition);
+                    CastW(target);
                 }
+
+                /*Spell.Skillshot.BestPosition pos = W.GetBestConeCastPosition(EntityManager.Heroes.Enemies);
+                
+                if (pos.HitNumber > 0)
+                {
+                    W.Cast(pos.CastPosition);
+                }*/
             }
         }
 
         public void CastWToJungle()
         {
-            if (Player.Instance.Spellbook.CanUseSpell(SpellSlot.W) == SpellState.Ready)
+            if (W.IsReady())
             {
-                Obj_AI_Minion target = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, WInfo.Range + WInfo.Radius * 2).ElementAtOrDefault(0);
+                List<Obj_AI_Minion> targets = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, W.Range).ToList();
 
-                if (target != null)
+                if (targets.Count > 0)
                 {
-                    Player.Instance.Spellbook.CastSpell(SpellSlot.W, target.ServerPosition);
+                    W.Cast(targets[0]);
+                }
+
+                /*Spell.Skillshot.BestPosition pos = W.GetBestConeCastPosition(EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, W.Range));
+
+                if (pos.HitNumber > 0)
+                {
+                    W.Cast(pos.CastPosition);
+                }*/
+            }
+        }
+
+        public void CastW(AIHeroClient target)
+        {
+            if (W.IsReady() && target != null && target.IsValidTarget(W.Range))
+            {
+                PredictionResult pred = W.GetPrediction(target);
+                
+                if (pred.HitChance >= HitChance.High)
+                {
+                    W.Cast(target);
                 }
             }
         }
         
         public void CastRToHero()
         {
-            if (Player.Instance.Spellbook.CanUseSpell(SpellSlot.R) == SpellState.Ready)
+            if (R.IsReady())
             {
-                CastMissileLineToHero(SpellSlot.R, RInfo);
+                AIHeroClient target = TargetSelector.GetTarget(W.Range, DamageType.Physical);
+
+                if (target != null)
+                {
+                    CastR(target);
+                }
             }
         }
         
         public void CastRToTarget()
         {
-            if (Player.Instance.Spellbook.CanUseSpell(SpellSlot.R) == SpellState.Ready &&
-                TargetSelector.SelectedTarget != null)
+            if (R.IsReady() && TargetSelector.SelectedTarget != null)
             {
-                CastMissileLineToHero(SpellSlot.R, RInfo, TargetSelector.SelectedTarget);
+                CastR(TargetSelector.SelectedTarget);
             }
         }
 
-        private void CastMissileLineToHero(SpellSlot spellSlot, SpellInfo spellInfo)
+        public void CastR(AIHeroClient target)
         {
-            AIHeroClient target = TargetSelector.GetTarget(WInfo.Range + WInfo.Radius * 2, DamageType.Physical);
-
-            if (target != null)
+            if (R.IsReady() && target != null && target.IsValidTarget(R.Range))
             {
-                CastMissileLineToHero(spellSlot, spellInfo, target);
-            }
-        }
+                PredictionResult pred = R.GetPrediction(target);
 
-        private void CastMissileLineToHero(SpellSlot spellSlot, SpellInfo spellInfo, AIHeroClient target)
-        {
-            Prediction.Manager.PredictionInput predictionInput = new Prediction.Manager.PredictionInput()
-            {
-                Target = target,
-                Range = spellInfo.Range,
-                Delay = spellInfo.Delay + spellInfo.MissileFixedTravelTime,
-                Speed = spellInfo.MissileSpeed,
-                Radius = RInfo.Radius,
-                From = Player.Instance.ServerPosition,
-                Type = SkillShotType.Linear
-            };
-
-            foreach (CollisionType collision in spellInfo.Collisions)
-            {
-                predictionInput.CollisionTypes.Add(collision);
-            }
-
-            Prediction.Manager.PredictionOutput predictionOutput = Prediction.Position.GetPrediction(predictionInput);
-            
-            if (predictionOutput.HitChance >= HitChance.Medium)
-            {
-                Player.Instance.Spellbook.CastSpell(spellSlot, predictionOutput.CastPosition);
+                if (pred.HitChance >= HitChance.High)
+                {
+                    R.Cast(target);
+                }
             }
         }
     }

@@ -30,8 +30,31 @@ namespace ClayAIO.ClayScripts
             Drawing.OnDraw += spellManager.OnDraw;
             Orbwalker.OnPostAttack += OnPostAttack;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
+            Gapcloser.OnGapcloser += OnGapCloser;
             
             Chat.Print("ClayAshe loaded!");
+        }
+
+        private void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
+        {
+            if (sender.IsEnemy && Player.Instance.GetAutoAttackRange() >= Player.Instance.Distance(e.End))
+            {
+                if (menuManager.GapCloserUseW)
+                {
+                    Core.DelayAction(delegate
+                    {
+                        spellManager.CastW(sender);
+                    }, 1000);
+                }
+                
+                if (menuManager.GapCloserUseR)
+                {
+                    Core.DelayAction(delegate
+                    {
+                        spellManager.CastR(sender);
+                    }, 1000);
+                }
+            }
         }
 
         private void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs e)
