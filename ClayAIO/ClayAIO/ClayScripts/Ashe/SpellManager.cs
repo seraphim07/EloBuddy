@@ -73,7 +73,7 @@ namespace ClayAIO.ClayScripts.Ashe
                 {
                     CastW(target);
                 }
-
+                
                 /*Spell.Skillshot.BestPosition pos = W.GetBestConeCastPosition(EntityManager.Heroes.Enemies);
                 
                 if (pos.HitNumber > 0)
