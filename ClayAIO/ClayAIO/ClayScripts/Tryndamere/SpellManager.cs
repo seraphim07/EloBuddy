@@ -3,6 +3,8 @@ using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
 using EloBuddy.SDK.Rendering;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ClayAIO.ClayScripts.Tryndamere
 {
@@ -16,9 +18,12 @@ namespace ClayAIO.ClayScripts.Tryndamere
         public SpellManager() : base()
         {
             Q = new Spell.Active(SpellSlot.Q);
-
-            W = new Spell.Active(SpellSlot.W);
-
+            
+            SpellData WData = Player.Instance.Spellbook.GetSpell(SpellSlot.W).SData;
+            W = new Spell.Active(
+                SpellSlot.W,
+                Convert.ToUInt32(WData.CastRadius));
+            
             SpellData EData = Player.Instance.Spellbook.GetSpell(SpellSlot.E).SData;
             E = new Spell.Skillshot(
                 SpellSlot.E,
@@ -26,7 +31,10 @@ namespace ClayAIO.ClayScripts.Tryndamere
                 SkillShotType.Linear,
                 Convert.ToInt32(EData.CastTime * 1000),
                 Convert.ToInt32(EData.MissileSpeed),
-                Convert.ToInt32(EData.LineWidth));
+                Convert.ToInt32(EData.LineWidth))
+            {
+                AllowedCollisionCount = int.MaxValue
+            };
 
             R = new Spell.Active(SpellSlot.R);
         }
@@ -35,9 +43,8 @@ namespace ClayAIO.ClayScripts.Tryndamere
         {
             Circle.Draw(indianRed, E.Range, Player.Instance);
 
+            // new Geometry.Polygon.Circle(Player.Instance.ServerPosition, W.Range).Draw(System.Drawing.Color.Yellow);
             // new Geometry.Polygon.Rectangle(Player.Instance.ServerPosition, Game.CursorPos, E.Width).Draw(System.Drawing.Color.Yellow);
-
-            Chat.Print(GetQHealAmount());
         }
 
         public int GetQHealAmount()
@@ -49,6 +56,89 @@ namespace ClayAIO.ClayScripts.Tryndamere
             double healPerFuryBonusApAmount = Player.Instance.TotalMagicalDamage * 0.012;
 
             return Convert.ToInt32(baseHealAmount + baseHealBonusApAmount + (healPerFuryAmount + healPerFuryBonusApAmount) * Player.Instance.Mana);
+        }
+        
+        public void CastEToHero()
+        {
+            if (E.IsReady())
+            {
+                AIHeroClient target = TargetSelector.GetTarget(E.Range, DamageType.Physical);
+
+                if (target != null)
+                {
+                    CastE(target);
+                }
+
+                /*Spell.Skillshot.BestPosition pos = E.GetBestLinearCastPosition(EntityManager.Heroes.Enemies);
+
+                if (pos.HitNumber > 0)
+                {
+                    E.Cast(pos.CastPosition);
+                }*/
+            }
+        }
+
+        public void CastEToMinion()
+        {
+            if (E.IsReady())
+            {
+                List<Obj_AI_Minion> minions = EntityManager.MinionsAndMonsters.GetLaneMinions(
+                    EntityManager.UnitTeam.Enemy,
+                    Player.Instance.ServerPosition,
+                    E.Range).ToList();
+
+                if (minions.Count > 0)
+                {
+                    E.Cast(minions[0]);
+                }
+
+                /*Spell.Skillshot.BestPosition pos = E.GetBestLinearCastPosition(EntityManager.MinionsAndMonsters.GetLaneMinions(
+                    EntityManager.UnitTeam.Enemy,
+                    Player.Instance.ServerPosition,
+                    E.Range));
+
+                if (pos.HitNumber > 0)
+                {
+                    E.Cast(pos.CastPosition);
+                }*/
+            }
+        }
+
+        public void CastEToJungle()
+        {
+            if (E.IsReady())
+            {
+                List<Obj_AI_Minion> monsters = EntityManager.MinionsAndMonsters.GetJungleMonsters(
+                    Player.Instance.ServerPosition,
+                    E.Range).ToList();
+
+                if (monsters.Count > 0)
+                {
+                    E.Cast(monsters[0]);
+                }
+
+                /*Spell.Skillshot.BestPosition pos = E.GetBestLinearCastPosition(EntityManager.MinionsAndMonsters.GetJungleMonsters(
+                    Player.Instance.ServerPosition,
+                    E.Range));
+
+                if (pos.HitNumber > 0)
+                {
+                    E.Cast(pos.CastPosition);
+                }*/
+            }
+        }
+
+        public void CastE(AIHeroClient target)
+        {
+            if (E.IsReady() && target != null && target.IsValidTarget(E.Range))
+            {
+                PredictionResult pred = E.GetPrediction(target);
+
+                if (pred.HitChance >= HitChance.High)
+                {
+                    E.Cast(target);
+                }
+            }
         }
     }
 }
