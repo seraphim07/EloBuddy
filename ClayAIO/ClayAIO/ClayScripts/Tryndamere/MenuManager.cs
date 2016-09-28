@@ -23,6 +23,11 @@ namespace ClayAIO.ClayScripts.Tryndamere
 
             GenerateMain();
             GeneratePermaActive();
+            GenerateCombo();
+            GenerateHarass();
+            GenerateLaneClear();
+            GenerateJungleClear();
+            GenerateFlee();
 
             Initialize();
         }
@@ -55,6 +60,86 @@ namespace ClayAIO.ClayScripts.Tryndamere
             get
             {
                 return (PermaActive["perma_active_use_r"] as CheckBox).CurrentValue;
+            }
+        }
+        #endregion
+
+        #region Combo
+        private void GenerateCombo()
+        {
+            Combo = Main.AddSubMenu("Combo", "combo");
+            Combo.Add("combo_use_w", new CheckBox("Use W", true));
+            Combo.Add("combo_use_e", new CheckBox("Use E", true));
+        }
+
+        public bool ComboUseW
+        {
+            get
+            {
+                return (Combo["combo_use_w"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public bool ComboUseE
+        {
+            get
+            {
+                return (Combo["combo_use_e"] as CheckBox).CurrentValue;
+            }
+        }
+        #endregion
+
+        #region Harass
+        private void GenerateHarass()
+        {
+            Harass = Main.AddSubMenu("Harass", "harass");
+        }
+        #endregion
+
+        #region Lane Clear
+        private void GenerateLaneClear()
+        {
+            LaneClear = Main.AddSubMenu("Lane Clear", "lane_clear");
+            LaneClear.Add("lane_clear_use_e", new CheckBox("Use E", true));
+        }
+
+        public bool LaneClearUseE
+        {
+            get
+            {
+                return (LaneClear["lane_clear_use_e"] as CheckBox).CurrentValue;
+            }
+        }
+        #endregion
+
+        #region Jungle Clear
+        private void GenerateJungleClear()
+        {
+            JungleClear = Main.AddSubMenu("Jungle Clear", "jungle_clear");
+            JungleClear.Add("jungle_clear_use_e", new CheckBox("Use E", true));
+        }
+
+        public bool JungleClearUseE
+        {
+            get
+            {
+                return (JungleClear["jungle_clear_use_e"] as CheckBox).CurrentValue;
+            }
+        }
+        #endregion
+
+        #region Flee
+        private void GenerateFlee()
+        {
+            Flee = Main.AddSubMenu("Flee", "flee");
+            Flee.Add("flee_use_e", new CheckBox("Use E", true));
+        }
+
+        public bool FleeUseE
+        {
+            get
+            {
+                return (Flee["flee_use_e"] as CheckBox).CurrentValue;
             }
         }
         #endregion

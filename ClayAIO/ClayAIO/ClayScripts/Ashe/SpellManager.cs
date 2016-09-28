@@ -24,10 +24,11 @@ namespace ClayAIO.ClayScripts.Ashe
                 SpellSlot.W,
                 Convert.ToUInt32(WData.CastConeDistance),
                 SkillShotType.Cone,
-                Convert.ToInt32(WData.CastTime) * 1000,
-                Convert.ToInt32(WData.MissileSpeed))
+                Convert.ToInt32(WData.CastTime * 1000),
+                Convert.ToInt32(WData.MissileSpeed),
+                Convert.ToInt32(WData.LineWidth))
             {
-                ConeAngleDegrees = Convert.ToInt32(WData.CastConeAngle)
+                ConeAngleDegrees = 40
             };
             
             SpellData EData = Player.Instance.Spellbook.GetSpell(SpellSlot.E).SData;
@@ -35,7 +36,7 @@ namespace ClayAIO.ClayScripts.Ashe
                 SpellSlot.E,
                 Convert.ToUInt32(EData.CastRange),
                 SkillShotType.Linear,
-                Convert.ToInt32(EData.CastTime) * 1000,
+                Convert.ToInt32(EData.CastTime * 1000),
                 Convert.ToInt32(EData.MissileSpeed),
                 Convert.ToInt32(EData.LineWidth));
 
@@ -44,7 +45,7 @@ namespace ClayAIO.ClayScripts.Ashe
                 SpellSlot.R,
                 Convert.ToUInt32(RData.CastRange),
                 SkillShotType.Linear,
-                Convert.ToInt32(RData.CastTime) * 1000,
+                Convert.ToInt32(RData.CastTime * 1000),
                 Convert.ToInt32(RData.MissileSpeed),
                 Convert.ToInt32(RData.LineWidth));
         }
@@ -52,6 +53,10 @@ namespace ClayAIO.ClayScripts.Ashe
         public void OnDraw(EventArgs e)
         {
             Circle.Draw(indianRed, W.Range, Player.Instance);
+
+            // new Geometry.Polygon.Sector(Player.Instance.ServerPosition, Game.CursorPos, (float)(W.ConeAngleDegrees * Math.PI / 180), W.Range).Draw(System.Drawing.Color.Yellow);
+            // new Geometry.Polygon.Rectangle(Player.Instance.ServerPosition, Game.CursorPos, E.Width).Draw(System.Drawing.Color.Yellow);
+            // new Geometry.Polygon.Rectangle(Player.Instance.ServerPosition, Game.CursorPos, R.Width).Draw(System.Drawing.Color.Yellow);
         }
 
         public void CastQ(IEnumerable<Obj_AI_Base> targets)
@@ -87,15 +92,17 @@ namespace ClayAIO.ClayScripts.Ashe
         {
             if (W.IsReady())
             {
-                List<Obj_AI_Minion> targets = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, W.Range).ToList();
+                List<Obj_AI_Minion> jungleMonsters = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, W.Range).ToList();
 
-                if (targets.Count > 0)
+                if (jungleMonsters.Count > 0)
                 {
-                    W.Cast(targets[0]);
+                    W.Cast(jungleMonsters[0]);
                 }
 
-                /*Spell.Skillshot.BestPosition pos = W.GetBestConeCastPosition(EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, W.Range));
+                /*Chat.Print(EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, W.Range).ToList().Count);
 
+                Spell.Skillshot.BestPosition pos = W.GetBestConeCastPosition(EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, W.Range));
+                
                 if (pos.HitNumber > 0)
                 {
                     W.Cast(pos.CastPosition);

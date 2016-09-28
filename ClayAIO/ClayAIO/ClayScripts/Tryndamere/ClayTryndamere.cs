@@ -18,6 +18,8 @@ namespace ClayAIO.ClayScripts
 
             Initialize();
 
+            Drawing.OnDraw += spellManager.OnDraw;
+
             Chat.Print("ClayTryndamere loaded!");
         }
     }

@@ -41,18 +41,21 @@ namespace ClayAIO.ClayScripts
             {
                 if (menuManager.GapCloserUseW)
                 {
-                    Core.DelayAction(delegate
+                    spellManager.CastW(sender);
+
+                    /*Core.DelayAction(delegate
                     {
                         spellManager.CastW(sender);
-                    }, 1000);
+                    }, 1000);*/
                 }
                 
                 if (menuManager.GapCloserUseR)
                 {
-                    Core.DelayAction(delegate
+                    spellManager.CastR(sender);
+                    /*Core.DelayAction(delegate
                     {
                         spellManager.CastR(sender);
-                    }, 1000);
+                    }, 1000);*/
                 }
             }
         }
