@@ -138,7 +138,7 @@ namespace ClayAIO
             {
                 ResolveCC(ItemId.Mercurial_Scimitar);
             }
-
+            
             if (menuManagerBase.UsePotion &&
                 !Player.HasBuff("RegenerationPotion") &&
                 Player.Instance.HealthPercent <= menuManagerBase.PotionHp &&
