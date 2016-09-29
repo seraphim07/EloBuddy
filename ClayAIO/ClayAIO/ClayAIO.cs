@@ -16,6 +16,9 @@ namespace ClayAIO
         {
             switch (Player.Instance.Hero)
             {
+                case Champion.Annie:
+                    new ClayAnnie();
+                    break;
                 case Champion.Ashe:
                     new ClayAshe();
                     break;

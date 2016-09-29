@@ -38,12 +38,12 @@ namespace ClayAIO.ClayScripts.Tryndamere
             Main.AddGroupLabel("Made by seraphim07");
         }
 
-        #region PermaActive
+        #region Perma Active
         private void GeneratePermaActive()
         {
             PermaActive = Main.AddSubMenu("Perma Active", "perma_active");
             PermaActive.Add("perma_active_use_q", new CheckBox("Use Q", true));
-            PermaActive.Add("perma_active_q_hp", new Slider("Use Q when <= hp %", 10, 0, 100));
+            PermaActive.Add("perma_active_q_hp", new Slider("Use Q when <= hp %", 25, 0, 100));
             PermaActive.Add("perma_active_use_r", new CheckBox("Use R", true));
             PermaActive.Add("perma_active_r_hp", new Slider("Use R when <= hp %", 10, 0, 100));
         }

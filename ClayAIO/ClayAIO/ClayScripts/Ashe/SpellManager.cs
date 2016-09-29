@@ -58,33 +58,26 @@ namespace ClayAIO.ClayScripts.Ashe
             // new Geometry.Polygon.Rectangle(Player.Instance.ServerPosition, Game.CursorPos, E.Width).Draw(System.Drawing.Color.Yellow);
             // new Geometry.Polygon.Rectangle(Player.Instance.ServerPosition, Game.CursorPos, R.Width).Draw(System.Drawing.Color.Yellow);
         }
-
-        public void CastQ(IEnumerable<Obj_AI_Base> targets)
-        {
-            if (Player.Instance.Spellbook.CanUseSpell(SpellSlot.Q) == SpellState.Ready &&
-                targets.Count(x => Player.Instance.IsInAutoAttackRange(x)) > 0)
-            {
-                Player.Instance.Spellbook.CastSpell(SpellSlot.Q);
-            }
-        }
         
         public void CastWToHero()
         {
             if (W.IsReady())
             {
-                AIHeroClient target = TargetSelector.GetTarget(W.Range, DamageType.Physical);
+                Spell.Skillshot.BestPosition bestPosition = GetBestConeCastPosition(W, EntityManager.Heroes.Enemies.Where(enemy => W.IsInRange(enemy)));
 
-                if (target != null)
+                if (bestPosition.HitNumber >= 2)
                 {
-                    CastW(target);
+                    W.Cast(bestPosition.CastPosition);
                 }
-                
-                /*Spell.Skillshot.BestPosition pos = W.GetBestConeCastPosition(EntityManager.Heroes.Enemies);
-                
-                if (pos.HitNumber > 0)
+                else
                 {
-                    W.Cast(pos.CastPosition);
-                }*/
+                    AIHeroClient target = TargetSelector.GetTarget(W.Range, DamageType.Physical);
+
+                    if (target != null)
+                    {
+                        CastSkillshotToTarget(W, target);
+                    }
+                }
             }
         }
 
@@ -96,29 +89,16 @@ namespace ClayAIO.ClayScripts.Ashe
 
                 if (jungleMonsters.Count > 0)
                 {
-                    W.Cast(jungleMonsters[0]);
-                }
+                    Spell.Skillshot.BestPosition bestPosition = GetBestConeCastPosition(W, jungleMonsters);
 
-                /*Chat.Print(EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, W.Range).ToList().Count);
-
-                Spell.Skillshot.BestPosition pos = W.GetBestConeCastPosition(EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, W.Range));
-                
-                if (pos.HitNumber > 0)
-                {
-                    W.Cast(pos.CastPosition);
-                }*/
-            }
-        }
-
-        public void CastW(AIHeroClient target)
-        {
-            if (W.IsReady() && target != null && target.IsValidTarget(W.Range))
-            {
-                PredictionResult pred = W.GetPrediction(target);
-                
-                if (pred.HitChance >= HitChance.High)
-                {
-                    W.Cast(target);
+                    if (bestPosition.HitNumber >= 1)
+                    {
+                        W.Cast(bestPosition.CastPosition);
+                    }
+                    else
+                    {
+                        CastSkillshotToTarget(W, jungleMonsters[0]);
+                    }
                 }
             }
         }
@@ -131,7 +111,7 @@ namespace ClayAIO.ClayScripts.Ashe
 
                 if (target != null)
                 {
-                    CastR(target);
+                    CastSkillshotToTarget(R, target);
                 }
             }
         }
@@ -140,20 +120,7 @@ namespace ClayAIO.ClayScripts.Ashe
         {
             if (R.IsReady() && TargetSelector.SelectedTarget != null)
             {
-                CastR(TargetSelector.SelectedTarget);
-            }
-        }
-
-        public void CastR(AIHeroClient target)
-        {
-            if (R.IsReady() && target != null && target.IsValidTarget(R.Range))
-            {
-                PredictionResult pred = R.GetPrediction(target);
-
-                if (pred.HitChance >= HitChance.High)
-                {
-                    R.Cast(target);
-                }
+                CastSkillshotToTarget(R, TargetSelector.SelectedTarget);
             }
         }
     }

@@ -3,6 +3,8 @@ using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
 using SharpDX;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ClayAIO
 {
@@ -79,6 +81,119 @@ namespace ClayAIO
             {
                 Ghost = new Spell.Active(ghostSlot);
             }
+        }
+
+        public void CastSkillshotToTarget(Spell.Skillshot skillshot, Obj_AI_Base target)
+        {
+            if (skillshot.IsReady() && target != null && target.IsValidTarget(skillshot.Range))
+            {
+                PredictionResult predictionResult = skillshot.GetPrediction(target);
+
+                if (predictionResult.HitChance >= HitChance.High)
+                {
+                    skillshot.Cast(target);
+                }
+            }
+        }
+
+        protected Tuple<Obj_AI_Base, int> GetBestLinearCastTarget(Spell.Skillshot skillshot, IEnumerable<Obj_AI_Base> entities)
+        {
+            Tuple<Obj_AI_Base, int> target = new Tuple<Obj_AI_Base, int>(null, 0);
+
+            foreach (Obj_AI_Base entity in entities.Where(e => skillshot.IsInRange(e)))
+            {
+                Geometry.Polygon.Rectangle rectangle = new Geometry.Polygon.Rectangle(
+                    Player.Instance.ServerPosition,
+                    entity.ServerPosition,
+                    skillshot.Width);
+
+                int hitNumber = entities.Count(e => rectangle.IsInside(e));
+
+                if (hitNumber > target.Item2)
+                {
+                    target = new Tuple<Obj_AI_Base, int>(entity, hitNumber);
+                }
+            }
+
+            return target;
+        }
+
+        protected Spell.Skillshot.BestPosition GetBestConeCastPosition(Spell.Skillshot skillshot, IEnumerable<Obj_AI_Base> entities)
+        {
+            Spell.Skillshot.BestPosition bestPosition = new Spell.Skillshot.BestPosition()
+            {
+                CastPosition = new Vector3(0, 0, 0),
+                HitNumber = 0
+            };
+
+            for (int x = -5; x <= 5; x++)
+            {
+                for (int y = -5; y <= 5; y++)
+                {
+                    if (x == 0 && y == 0) continue;
+
+                    Vector3 castPosition = new Vector3(
+                        Player.Instance.ServerPosition.X + x,
+                        Player.Instance.ServerPosition.Y + y,
+                        Player.Instance.ServerPosition.Z);
+
+                    Geometry.Polygon.Sector sector = new Geometry.Polygon.Sector(
+                        Player.Instance.ServerPosition,
+                        castPosition,
+                        (float)(skillshot.ConeAngleDegrees * Math.PI / 180f),
+                        skillshot.Range);
+
+                    int hitNumber = entities.Count(entity => sector.IsInside(entity));
+
+                    if (hitNumber > bestPosition.HitNumber)
+                    {
+                        bestPosition.CastPosition = castPosition;
+                        bestPosition.HitNumber = hitNumber;
+                    }
+                }
+            }
+
+            return bestPosition;
+        }
+
+        protected Spell.Skillshot.BestPosition GetBestCircularCastPosition(Spell.Skillshot skillshot, IEnumerable<Obj_AI_Base> entities)
+        {
+            Spell.Skillshot.BestPosition bestPosition = new Spell.Skillshot.BestPosition()
+            {
+                CastPosition = new Vector3(0f, 0f, 0f),
+                HitNumber = 0
+            };
+
+            foreach (Obj_AI_Base entity in entities)
+            {
+                for (float x = entity.ServerPosition.X - skillshot.Radius;
+                    x <= entity.ServerPosition.X + skillshot.Radius;
+                    x += skillshot.Radius / 5f)
+                {
+                    for (float y = entity.ServerPosition.Y - skillshot.Radius;
+                        y <= entity.ServerPosition.Y + skillshot.Radius;
+                        y += skillshot.Radius / 5f)
+                    {
+                        Vector3 castPosition = new Vector3(x, y, entity.ServerPosition.Z);
+
+                        if (!skillshot.IsInRange(castPosition)) continue;
+
+                        Geometry.Polygon.Circle circle = new Geometry.Polygon.Circle(
+                            castPosition,
+                            skillshot.Radius);
+
+                        int hitNumber = entities.Count(e => circle.IsInside(e));
+
+                        if (hitNumber > bestPosition.HitNumber)
+                        {
+                            bestPosition.CastPosition = castPosition;
+                            bestPosition.HitNumber = hitNumber;
+                        }
+                    }
+                }
+            }
+
+            return bestPosition;
         }
     }
 }

@@ -1,17 +1,17 @@
-﻿using ClayAIO.ClayScripts.Tryndamere;
+﻿using ClayAIO.ClayScripts.Annie;
 using EloBuddy;
 using EloBuddy.SDK.Events;
 
 namespace ClayAIO.ClayScripts
 {
-    class ClayTryndamere : ClayBase
+    class ClayAnnie : ClayBase
     {
         private MenuManager menuManager;
         private SpellManager spellManager;
 
-        public ClayTryndamere() : base()
+        public ClayAnnie() : base()
         {
-            primaryDamageType = DamageType.Physical;
+            primaryDamageType = DamageType.Magical;
 
             menuManagerBase = new MenuManager();
             spellManagerBase = new SpellManager();
@@ -20,33 +20,14 @@ namespace ClayAIO.ClayScripts
             spellManager = spellManagerBase as SpellManager;
 
             Initialize();
-            
+
             Drawing.OnDraw += spellManager.OnDraw;
 
-            Chat.Print("ClayTryndamere loaded!");
+            Chat.Print("ClayAnnie loaded!");
         }
-        
+
         protected override void OnTickPermaActive()
         {
-            if (!spellManager.IsRActive())
-            {
-                if (menuManager.PermaActiveUseQ &&
-                    Player.Instance.HealthPercent <= menuManager.PermaActiveQHp)
-                {
-                    spellManager.Q.Cast();
-
-                    return;
-                }
-
-                if (menuManager.PermaActiveUseR &&
-                    Player.Instance.HealthPercent <= menuManager.PermaActiveRHp)
-                {
-                    spellManager.R.Cast();
-
-                    return;
-                }
-            }
-
             base.OnTickPermaActive();
         }
 
@@ -54,7 +35,7 @@ namespace ClayAIO.ClayScripts
         {
             base.OnGapcloser(sender, e);
         }
-        
+
         protected override void OnInterruptableSpell(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs e)
         {
             base.OnInterruptableSpell(sender, e);
@@ -62,12 +43,9 @@ namespace ClayAIO.ClayScripts
 
         protected override void OnTickCombo()
         {
-            if (menuManager.ComboUseW) spellManager.W.Cast();
-            if (menuManager.ComboUseE) spellManager.CastEToHero();
-
             base.OnTickCombo();
         }
-        
+
         protected override void OnTickHarass()
         {
             base.OnTickHarass();
@@ -75,14 +53,11 @@ namespace ClayAIO.ClayScripts
 
         protected override void OnTickLaneClear()
         {
-            if (menuManager.LaneClearUseE) spellManager.CastEToMinion();
-
             base.OnTickLaneClear();
         }
-        
+
         protected override void OnTickJungleClear()
         {
-            if (menuManager.JungleClearUseE) spellManager.CastEToJungle();
             base.OnTickJungleClear();
         }
 
@@ -93,11 +68,6 @@ namespace ClayAIO.ClayScripts
 
         protected override void OnTickFlee()
         {
-            if (menuManager.JungleClearUseE)
-            {
-                spellManager.E.Cast(Game.CursorPos);
-            }
-
             base.OnTickFlee();
         }
     }

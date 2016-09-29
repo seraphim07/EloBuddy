@@ -2,6 +2,7 @@
 using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
 using EloBuddy.SDK.Rendering;
+using SharpDX;
 using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
@@ -56,7 +57,7 @@ namespace ClayAIO.ClayScripts.Tryndamere
 
             if (IsRActive())
             {
-                Consolas.DrawText(null, "R Remaining: " + GetRRemainingTime().ToString("F2"), 10, 10, SharpDX.Color.Red);
+                Consolas.DrawText(null, "R Remaining: " + GetRRemainingTime().ToString("F2"), 10, 10, Color.Red);
             }
 
             // new Geometry.Polygon.Circle(Player.Instance.ServerPosition, W.Range).Draw(System.Drawing.Color.Yellow);
@@ -99,15 +100,8 @@ namespace ClayAIO.ClayScripts.Tryndamere
 
                 if (target != null)
                 {
-                    CastE(target);
+                    CastSkillshotToTarget(E, target);
                 }
-
-                /*Spell.Skillshot.BestPosition pos = E.GetBestLinearCastPosition(EntityManager.Heroes.Enemies);
-
-                if (pos.HitNumber > 0)
-                {
-                    E.Cast(pos.CastPosition);
-                }*/
             }
         }
 
@@ -118,22 +112,21 @@ namespace ClayAIO.ClayScripts.Tryndamere
                 List<Obj_AI_Minion> minions = EntityManager.MinionsAndMonsters.GetLaneMinions(
                     EntityManager.UnitTeam.Enemy,
                     Player.Instance.ServerPosition,
-                    E.Range).ToList();
+                    E.Range).Where(minion => minion.IsEnemy).ToList();
 
                 if (minions.Count > 0)
                 {
-                    E.Cast(minions[0]);
+                    Tuple<Obj_AI_Base, int> bestTarget = GetBestLinearCastTarget(E, minions);
+
+                    if (bestTarget.Item2 >= 1)
+                    {
+                        CastSkillshotToTarget(E, bestTarget.Item1);
+                    }
+                    else
+                    {
+                        CastSkillshotToTarget(E, minions[0]);
+                    }
                 }
-
-                /*Spell.Skillshot.BestPosition pos = E.GetBestLinearCastPosition(EntityManager.MinionsAndMonsters.GetLaneMinions(
-                    EntityManager.UnitTeam.Enemy,
-                    Player.Instance.ServerPosition,
-                    E.Range));
-
-                if (pos.HitNumber > 0)
-                {
-                    E.Cast(pos.CastPosition);
-                }*/
             }
         }
 
@@ -147,36 +140,18 @@ namespace ClayAIO.ClayScripts.Tryndamere
 
                 if (monsters.Count > 0)
                 {
-                    E.Cast(monsters[0]);
-                }
+                    Tuple<Obj_AI_Base, int> bestTarget = GetBestLinearCastTarget(E, monsters);
 
-                /*Spell.Skillshot.BestPosition pos = E.GetBestLinearCastPosition(EntityManager.MinionsAndMonsters.GetJungleMonsters(
-                    Player.Instance.ServerPosition,
-                    E.Range));
-
-                if (pos.HitNumber > 0)
-                {
-                    E.Cast(pos.CastPosition);
-                }*/
-            }
-        }
-
-        public void CastE(AIHeroClient target)
-        {
-            if (E.IsReady() && target != null && target.IsValidTarget(E.Range))
-            {
-                PredictionResult pred = E.GetPrediction(target);
-
-                if (pred.HitChance >= HitChance.High)
-                {
-                    E.Cast(target);
+                    if (bestTarget.Item2 >= 1)
+                    {
+                        CastSkillshotToTarget(E, bestTarget.Item1);
+                    }
+                    else
+                    {
+                        CastSkillshotToTarget(E, monsters[0]);
+                    }
                 }
             }
-        }
-
-        public void CastW()
-        {
-            W.Cast();
         }
     }
 }

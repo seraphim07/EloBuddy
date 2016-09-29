@@ -31,53 +31,26 @@ namespace ClayAIO.ClayScripts
             Initialize();
 
             Drawing.OnDraw += spellManager.OnDraw;
+            Orbwalker.OnPreAttack += OnPreAttack;
             Orbwalker.OnPostAttack += OnPostAttack;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             
             Chat.Print("ClayAshe loaded!");
         }
-        
-        protected override void OnGapcloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
-        {
-            if (sender.IsEnemy && Player.Instance.GetAutoAttackRange() >= Player.Instance.Distance(e.End))
-            {
-                if (menuManager.GapcloserUseW)
-                {
-                    spellManager.CastW(sender);
 
-                    /*Core.DelayAction(delegate
-                    {
-                        spellManager.CastW(sender);
-                    }, 1000);*/
-                }
-                
-                if (menuManager.GapcloserUseR)
-                {
-                    spellManager.CastR(sender);
-                    /*Core.DelayAction(delegate
-                    {
-                        spellManager.CastR(sender);
-                    }, 1000);*/
-                }
-            }
-        }
-        
-        protected override void OnInterruptableSpell(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs e)
+        #region Custom Event Handlers
+        private void OnPreAttack(AttackableUnit target, Orbwalker.PreAttackArgs args)
         {
-            if (sender.IsEnemy && e.DangerLevel == DangerLevel.High && Player.Instance.IsInAutoAttackRange(sender))
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) &&
+                menuManager.ComboUseQ)
             {
-                if (menuManager.InterruptUseR)
-                {
-                    spellManager.CastR(sender as AIHeroClient);
-                }
+                spellManager.Q.Cast();
             }
-        }
 
-        private void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs e)
-        {
-            if (sender.IsMe && e.Slot == SpellSlot.W)
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear) &&
+                menuManager.JungleClearUseQ)
             {
-                Orbwalker.ResetAutoAttack();
+                spellManager.Q.Cast();
             }
         }
 
@@ -102,7 +75,23 @@ namespace ClayAIO.ClayScripts
                 spellManager.CastWToJungle();
             }
         }
+
+        private void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs e)
+        {
+            if (sender.IsMe && e.Slot == SpellSlot.W)
+            {
+                Orbwalker.ResetAutoAttack();
+            }
+        }
         
+        private void OnTickFireUlt()
+        {
+            Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+
+            spellManager.CastRToTarget();
+        }
+        #endregion
+
         protected override void OnTickPermaActive()
         {
             if (menuManager.FireUltKey)
@@ -117,12 +106,41 @@ namespace ClayAIO.ClayScripts
 
             base.OnTickPermaActive();
         }
-
-        private void OnTickFireUlt()
+        
+        protected override void OnGapcloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
         {
-            Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+            if (sender.IsEnemy && Player.Instance.GetAutoAttackRange() >= Player.Instance.Distance(e.End))
+            {
+                if (menuManager.GapcloserUseW)
+                {
+                    spellManager.CastSkillshotToTarget(spellManager.W, sender);
 
-            spellManager.CastRToTarget();
+                    /*Core.DelayAction(delegate
+                    {
+                        spellManager.CastW(sender);
+                    }, 1000);*/
+                }
+                
+                if (menuManager.GapcloserUseR)
+                {
+                    spellManager.CastSkillshotToTarget(spellManager.R, sender);
+                    /*Core.DelayAction(delegate
+                    {
+                        spellManager.CastR(sender);
+                    }, 1000);*/
+                }
+            }
+        }
+        
+        protected override void OnInterruptableSpell(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs e)
+        {
+            if (sender.IsEnemy && e.DangerLevel == DangerLevel.High && Player.Instance.IsInAutoAttackRange(sender))
+            {
+                if (menuManager.InterruptUseR)
+                {
+                    spellManager.CastSkillshotToTarget(spellManager.R, sender);
+                }
+            }
         }
         
         protected override void OnTickCombo()
@@ -145,12 +163,7 @@ namespace ClayAIO.ClayScripts
             {
                 comboTargets.Add(target);
             }
-
-            if (menuManager.ComboUseQ)
-            {
-                spellManager.CastQ(EntityManager.Heroes.Enemies);
-            }
-
+            
             if (menuManager.ComboUseR)
             {
                 spellManager.CastRToHero();
@@ -175,11 +188,6 @@ namespace ClayAIO.ClayScripts
 
         protected override void OnTickJungleClear()
         {
-            if (menuManager.JungleClearUseQ)
-            {
-                spellManager.CastQ(EntityManager.MinionsAndMonsters.GetJungleMonsters());
-            }
-
             base.OnTickJungleClear();
         }
 

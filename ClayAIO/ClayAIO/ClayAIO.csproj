@@ -61,6 +61,9 @@
   <ItemGroup>
     <Compile Include="ClayAIO.cs" />
     <Compile Include="ClayBase.cs" />
+    <Compile Include="ClayScripts\Annie\ClayAnnie.cs" />
+    <Compile Include="ClayScripts\Annie\MenuManager.cs" />
+    <Compile Include="ClayScripts\Annie\SpellManager.cs" />
     <Compile Include="ClayScripts\Ashe\ClayAshe.cs" />
     <Compile Include="ClayScripts\Ashe\MenuManager.cs" />
     <Compile Include="ClayScripts\Ashe\SpellManager.cs" />
