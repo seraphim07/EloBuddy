@@ -24,7 +24,7 @@ namespace ClayAIO.ClayScripts.Ashe
                 SpellSlot.W,
                 Convert.ToUInt32(WData.CastConeDistance),
                 SkillShotType.Cone,
-                Convert.ToInt32(WData.CastTime * 1000),
+                Convert.ToInt32(WData.CastTime * 1000f),
                 Convert.ToInt32(WData.MissileSpeed),
                 Convert.ToInt32(WData.LineWidth))
             {
@@ -36,7 +36,7 @@ namespace ClayAIO.ClayScripts.Ashe
                 SpellSlot.E,
                 Convert.ToUInt32(EData.CastRange),
                 SkillShotType.Linear,
-                Convert.ToInt32(EData.CastTime * 1000),
+                Convert.ToInt32(EData.CastTime * 1000f),
                 Convert.ToInt32(EData.MissileSpeed),
                 Convert.ToInt32(EData.LineWidth));
 
@@ -45,7 +45,7 @@ namespace ClayAIO.ClayScripts.Ashe
                 SpellSlot.R,
                 Convert.ToUInt32(RData.CastRange),
                 SkillShotType.Linear,
-                Convert.ToInt32(RData.CastTime * 1000),
+                Convert.ToInt32(RData.CastTime * 1000f),
                 Convert.ToInt32(RData.MissileSpeed),
                 Convert.ToInt32(RData.LineWidth));
         }

@@ -22,11 +22,11 @@ namespace ClayAIO.ClayScripts.Ashe
             SkinDictionary.Add("PROJECT: Ashe", 8);
 
             GenerateMain();
-            GenerateGapCloser();
+            GenerateGapcloser();
+            GenerateInterrupt();
             GenerateFireUlt();
             GenerateCombo();
             GenerateHarass();
-            GenerateLaneClear();
             GenerateJungleClear();
             GenerateFlee();
 
@@ -41,26 +41,42 @@ namespace ClayAIO.ClayScripts.Ashe
         }
 
         #region Gap Closer
-        private void GenerateGapCloser()
+        private void GenerateGapcloser()
         {
-            GapCloser = Main.AddSubMenu("Gap Closer", "gap_closer");
-            GapCloser.Add("gap_closer_use_w", new CheckBox("Use W on enemy gap closer", true));
-            GapCloser.Add("gap_closer_use_r", new CheckBox("Use R on enemy gap closer", true));
+            Gapcloser = Main.AddSubMenu("Gapcloser", "gapcloser");
+            Gapcloser.Add("gapcloser_use_w", new CheckBox("Use W on enemy gap closer", true));
+            Gapcloser.Add("gapcloser_use_r", new CheckBox("Use R on enemy gap closer", true));
         }
 
-        public bool GapCloserUseW
+        public bool GapcloserUseW
         {
             get
             {
-                return (GapCloser["gap_closer_use_w"] as CheckBox).CurrentValue;
+                return (Gapcloser["gapcloser_use_w"] as CheckBox).CurrentValue;
             }
         }
 
-        public bool GapCloserUseR
+        public bool GapcloserUseR
         {
             get
             {
-                return (GapCloser["gap_closer_use_r"] as CheckBox).CurrentValue;
+                return (Gapcloser["gapcloser_use_r"] as CheckBox).CurrentValue;
+            }
+        }
+        #endregion
+
+        #region Interrupt
+        private void GenerateInterrupt()
+        {
+            Interrupt = Main.AddSubMenu("Interrupt", "interrupt");
+            Interrupt.Add("interrupt_use_r", new CheckBox("Use R to interrupt cast", true));
+        }
+
+        public bool InterruptUseR
+        {
+            get
+            {
+                return (Interrupt["interrupt_use_r"] as CheckBox).CurrentValue;
             }
         }
         #endregion
@@ -148,14 +164,7 @@ namespace ClayAIO.ClayScripts.Ashe
             }
         }
         #endregion
-
-        #region Lane Clear
-        private void GenerateLaneClear()
-        {
-            LaneClear = Main.AddSubMenu("Lane Clear", "lane_clear");
-        }
-        #endregion
-
+        
         #region Jungle Clear
         private void GenerateJungleClear()
         {

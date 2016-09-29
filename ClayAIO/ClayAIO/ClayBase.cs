@@ -54,6 +54,7 @@ namespace ClayAIO
                 UseOffensiveItems();
 
                 if (menuManagerBase.UseHealCombo) UseHeal();
+                if (menuManagerBase.UseBarrierCombo) UseBarrier();
 
                 OnTickCombo();
             }
@@ -81,6 +82,7 @@ namespace ClayAIO
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
             {
                 if (menuManagerBase.UseHealFlee) UseHeal();
+                if (menuManagerBase.UseBarrierFlee) UseBarrier();
 
                 OnTickFlee();
             }
@@ -207,6 +209,16 @@ namespace ClayAIO
                 Player.Instance.HealthPercent <= menuManagerBase.UseHealHp)
             {
                 spellManagerBase.Heal.Cast();
+            }
+        }
+
+        private void UseBarrier()
+        {
+            if (spellManagerBase.Barrier != null &&
+                spellManagerBase.Barrier.IsReady() &&
+                Player.Instance.HealthPercent <= menuManagerBase.UseBarrierHp)
+            {
+                spellManagerBase.Barrier.Cast();
             }
         }
     }

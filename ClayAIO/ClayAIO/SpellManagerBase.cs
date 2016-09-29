@@ -13,6 +13,8 @@ namespace ClayAIO
         public const string NAME_CLEANSE = "SummonerBoost";
         public const string NAME_EXHAUST = "SummonerExhaust";
         public const string NAME_GHOST = "SummonerHaste";
+        public const string NAME_IGNITE = "summonerignite";
+        public const string NAME_FLASH = "summonerflash";
 
         public Spell.Active Heal;
         public Spell.Active Barrier;
@@ -54,7 +56,7 @@ namespace ClayAIO
                 Exhaust = null;
             }
 
-            SpellSlot igniteSlot = Player.Instance.GetSpellSlotFromName("summonerignite");
+            SpellSlot igniteSlot = Player.Instance.GetSpellSlotFromName(NAME_IGNITE);
             if (!igniteSlot.Equals(SpellSlot.Unknown))
             {
                 SpellDataInst igniteData = Player.Instance.Spellbook.GetSpell(igniteSlot);
@@ -65,7 +67,7 @@ namespace ClayAIO
                 Ignite = null;
             }
 
-            SpellSlot flashSlot = Player.Instance.GetSpellSlotFromName("summonerflash");
+            SpellSlot flashSlot = Player.Instance.GetSpellSlotFromName(NAME_FLASH);
             if (!flashSlot.Equals(SpellSlot.Unknown))
             {
                 SpellDataInst flashData = Player.Instance.Spellbook.GetSpell(flashSlot);

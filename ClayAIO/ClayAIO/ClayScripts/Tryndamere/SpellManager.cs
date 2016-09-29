@@ -2,6 +2,7 @@
 using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
 using EloBuddy.SDK.Rendering;
+using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,15 @@ namespace ClayAIO.ClayScripts.Tryndamere
 {
     class SpellManager : SpellManagerBase
     {
+        public const string R_BUFF_NAME = "Undying Rage";
+
         public Spell.Active Q;
         public Spell.Active W;
         public Spell.Skillshot E;
         public Spell.Active R;
 
+        private Font Consolas;
+        
         public SpellManager() : base()
         {
             Q = new Spell.Active(SpellSlot.Q);
@@ -29,7 +34,7 @@ namespace ClayAIO.ClayScripts.Tryndamere
                 SpellSlot.E,
                 Convert.ToUInt32(EData.CastRange),
                 SkillShotType.Linear,
-                Convert.ToInt32(EData.CastTime * 1000),
+                Convert.ToInt32(EData.CastTime * 1000f),
                 Convert.ToInt32(EData.MissileSpeed),
                 Convert.ToInt32(EData.LineWidth))
             {
@@ -37,25 +42,53 @@ namespace ClayAIO.ClayScripts.Tryndamere
             };
 
             R = new Spell.Active(SpellSlot.R);
+
+            Consolas = new Font(Drawing.Direct3DDevice, new FontDescription()
+            {
+                FaceName = "Consolas",
+                Height = 50
+            });
         }
 
         public void OnDraw(EventArgs e)
         {
             Circle.Draw(indianRed, E.Range, Player.Instance);
 
+            if (IsRActive())
+            {
+                Consolas.DrawText(null, "R Remaining: " + GetRRemainingTime().ToString("F2"), 10, 10, SharpDX.Color.Red);
+            }
+
             // new Geometry.Polygon.Circle(Player.Instance.ServerPosition, W.Range).Draw(System.Drawing.Color.Yellow);
             // new Geometry.Polygon.Rectangle(Player.Instance.ServerPosition, Game.CursorPos, E.Width).Draw(System.Drawing.Color.Yellow);
         }
 
-        public int GetQHealAmount()
+        public float GetQHealAmount()
         {
-            double baseHealAmount = 20 + Q.Level * 10;
-            double baseHealBonusApAmount = Player.Instance.TotalMagicalDamage * 0.3;
+            float baseHealAmount = 20 + Q.Level * 10;
+            float baseHealBonusApAmount = Player.Instance.TotalMagicalDamage * 0.3f;
 
-            double healPerFuryAmount = 0.05 + Q.Level * 0.45;
-            double healPerFuryBonusApAmount = Player.Instance.TotalMagicalDamage * 0.012;
+            float healPerFuryAmount = 0.05f + Q.Level * 0.45f;
+            float healPerFuryBonusApAmount = Player.Instance.TotalMagicalDamage * 0.012f;
 
-            return Convert.ToInt32(baseHealAmount + baseHealBonusApAmount + (healPerFuryAmount + healPerFuryBonusApAmount) * Player.Instance.Mana);
+            return baseHealAmount + baseHealBonusApAmount + (healPerFuryAmount + healPerFuryBonusApAmount) * Player.Instance.Mana;
+        }
+
+        public bool IsRActive()
+        {
+            return Player.Instance.HasBuff(R_BUFF_NAME);
+        }
+
+        public float GetRRemainingTime()
+        {
+            if (IsRActive())
+            {
+                return Player.Instance.GetBuff(R_BUFF_NAME).EndTime - Game.Time;
+            }
+            else
+            {
+                return 0;
+            }
         }
         
         public void CastEToHero()
@@ -139,6 +172,11 @@ namespace ClayAIO.ClayScripts.Tryndamere
                     E.Cast(target);
                 }
             }
+        }
+
+        public void CastW()
+        {
+            W.Cast();
         }
     }
 }

@@ -24,7 +24,6 @@ namespace ClayAIO.ClayScripts.Tryndamere
             GenerateMain();
             GeneratePermaActive();
             GenerateCombo();
-            GenerateHarass();
             GenerateLaneClear();
             GenerateJungleClear();
             GenerateFlee();
@@ -43,8 +42,10 @@ namespace ClayAIO.ClayScripts.Tryndamere
         private void GeneratePermaActive()
         {
             PermaActive = Main.AddSubMenu("Perma Active", "perma_active");
-            PermaActive.Add("perma_actve_use_q", new CheckBox("Use Q when you can survive with Q's heal", true));
-            PermaActive.Add("perma_active_use_r", new CheckBox("Use R when incoming attack will kill you", true));
+            PermaActive.Add("perma_active_use_q", new CheckBox("Use Q", true));
+            PermaActive.Add("perma_active_q_hp", new Slider("Use Q when <= hp %", 5, 0, 100));
+            PermaActive.Add("perma_active_use_r", new CheckBox("Use R", true));
+            PermaActive.Add("perma_active_r_hp", new Slider("Use R when <= hp %", 5, 0, 100));
         }
 
         public bool PermaActiveUseQ
@@ -55,11 +56,27 @@ namespace ClayAIO.ClayScripts.Tryndamere
             }
         }
 
+        public int PermaActiveQHp
+        {
+            get
+            {
+                return (PermaActive["perma_active_q_hp"] as Slider).CurrentValue;
+            }
+        }
+
         public bool PermaActiveUseR
         {
             get
             {
                 return (PermaActive["perma_active_use_r"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public int PermaActiveRHp
+        {
+            get
+            {
+                return (PermaActive["perma_active_r_hp"] as Slider).CurrentValue;
             }
         }
         #endregion
@@ -88,14 +105,7 @@ namespace ClayAIO.ClayScripts.Tryndamere
             }
         }
         #endregion
-
-        #region Harass
-        private void GenerateHarass()
-        {
-            Harass = Main.AddSubMenu("Harass", "harass");
-        }
-        #endregion
-
+        
         #region Lane Clear
         private void GenerateLaneClear()
         {

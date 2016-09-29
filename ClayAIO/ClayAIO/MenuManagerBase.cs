@@ -9,7 +9,7 @@ namespace ClayAIO
 {
     class MenuManagerBase
     {
-        public Menu Main, GapCloser, Combo, Harass, LaneClear, JungleClear, LastHit, Flee, Misc;
+        public Menu Main, Gapcloser, Interrupt, Combo, Harass, LaneClear, JungleClear, LastHit, Flee, Misc;
 
         protected Dictionary<string, int> SkinDictionary;
         private Dictionary<int, int> SkinIndexID;
@@ -64,6 +64,13 @@ namespace ClayAIO
                 Misc.Add("misc_use_heal_combo", new CheckBox("Use Heal during Combo mode", true));
                 Misc.Add("misc_use_heal_flee", new CheckBox("Use Heal during Flee mode", true));
                 Misc.Add("misc_use_heal_hp", new Slider("Use Heal when <= hp %", 10, 0, 100));
+            }
+
+            if (Player.Instance.GetSpellSlotFromName(SpellManagerBase.NAME_BARRIER) != SpellSlot.Unknown)
+            {
+                Misc.Add("misc_use_barrier_combo", new CheckBox("Use Barrier during Combo mode", true));
+                Misc.Add("misc_use_barrier_flee", new CheckBox("Use Barrier during Flee mode", true));
+                Misc.Add("misc_use_barrier_hp", new Slider("Use Barrier when <= hp %", 10, 0, 100));
             }
             
             if (Player.Instance.GetSpellSlotFromName(SpellManagerBase.NAME_CLEANSE) != SpellSlot.Unknown)
@@ -213,6 +220,30 @@ namespace ClayAIO
             get
             {
                 return Misc["misc_use_heal_hp"] != null ? (Misc["misc_use_heal_hp"] as Slider).CurrentValue : 0;
+            }
+        }
+
+        public bool UseBarrierCombo
+        {
+            get
+            {
+                return Misc["misc_use_barrier_combo"] != null ? (Misc["misc_use_barrier_combo"] as CheckBox).CurrentValue : false;
+            }
+        }
+
+        public bool UseBarrierFlee
+        {
+            get
+            {
+                return Misc["misc_use_barrier_flee"] != null ? (Misc["misc_use_barrier_flee"] as CheckBox).CurrentValue : false;
+            }
+        }
+
+        public int UseBarrierHp
+        {
+            get
+            {
+                return Misc["misc_use_barrier_hp"] != null ? (Misc["misc_use_barrier_hp"] as Slider).CurrentValue : 0;
             }
         }
         

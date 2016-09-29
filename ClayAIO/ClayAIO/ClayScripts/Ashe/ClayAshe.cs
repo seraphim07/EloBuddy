@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EloBuddy.SDK.Events;
 using ClayAIO.ClayScripts.Ashe;
+using EloBuddy.SDK.Enumerations;
 
 namespace ClayAIO.ClayScripts
 {
@@ -17,6 +18,8 @@ namespace ClayAIO.ClayScripts
 
         public ClayAshe() : base()
         {
+            primaryDamageType = DamageType.Physical;
+
             menuManagerBase = new MenuManager();
             spellManagerBase = new SpellManager();
 
@@ -30,16 +33,15 @@ namespace ClayAIO.ClayScripts
             Drawing.OnDraw += spellManager.OnDraw;
             Orbwalker.OnPostAttack += OnPostAttack;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
-            Gapcloser.OnGapcloser += OnGapCloser;
             
             Chat.Print("ClayAshe loaded!");
         }
-
-        private void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
+        
+        protected override void OnGapcloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
         {
             if (sender.IsEnemy && Player.Instance.GetAutoAttackRange() >= Player.Instance.Distance(e.End))
             {
-                if (menuManager.GapCloserUseW)
+                if (menuManager.GapcloserUseW)
                 {
                     spellManager.CastW(sender);
 
@@ -49,13 +51,24 @@ namespace ClayAIO.ClayScripts
                     }, 1000);*/
                 }
                 
-                if (menuManager.GapCloserUseR)
+                if (menuManager.GapcloserUseR)
                 {
                     spellManager.CastR(sender);
                     /*Core.DelayAction(delegate
                     {
                         spellManager.CastR(sender);
                     }, 1000);*/
+                }
+            }
+        }
+        
+        protected override void OnInterruptableSpell(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs e)
+        {
+            if (sender.IsEnemy && e.DangerLevel == DangerLevel.High && Player.Instance.IsInAutoAttackRange(sender))
+            {
+                if (menuManager.InterruptUseR)
+                {
+                    spellManager.CastR(sender as AIHeroClient);
                 }
             }
         }
@@ -89,7 +102,7 @@ namespace ClayAIO.ClayScripts
                 spellManager.CastWToJungle();
             }
         }
-
+        
         protected override void OnTickPermaActive()
         {
             if (menuManager.FireUltKey)
@@ -111,36 +124,26 @@ namespace ClayAIO.ClayScripts
 
             spellManager.CastRToTarget();
         }
-
-        protected override void OnGapcloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
-        {
-            base.OnGapcloser(sender, e);
-        }
-
-        protected override void OnInterruptableSpell(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs e)
-        {
-            base.OnInterruptableSpell(sender, e);
-        }
-
+        
         protected override void OnTickCombo()
         {
             if (menuManager.ComboUseE &&
-                Player.Instance.Spellbook.CanUseSpell(SpellSlot.E) == SpellState.Ready)
+                spellManager.E.IsReady())
             {
                 foreach (AIHeroClient target in comboTargets)
                 {
                     if (!target.IsVisible)
                     {
-                        Player.Instance.Spellbook.CastSpell(SpellSlot.E, target.ServerPosition);
+                        spellManager.E.Cast(target.ServerPosition);
                     }
                 }
+            }
 
-                comboTargets.Clear();
+            comboTargets.Clear();
 
-                foreach (AIHeroClient target in EntityManager.Heroes.Enemies.Where(x => Player.Instance.IsInAutoAttackRange(x)))
-                {
-                    comboTargets.Add(target);
-                }
+            foreach (AIHeroClient target in EntityManager.Heroes.Enemies.Where(x => Player.Instance.IsInAutoAttackRange(x)))
+            {
+                comboTargets.Add(target);
             }
 
             if (menuManager.ComboUseQ)
@@ -155,10 +158,14 @@ namespace ClayAIO.ClayScripts
 
             base.OnTickCombo();
         }
-
+        
         protected override void OnTickHarass()
         {
-            base.OnTickHarass();
+            if (menuManager.HarassUseW &&
+                Player.Instance.ManaPercent >= menuManager.HarassWMana)
+            {
+                spellManager.CastWToHero();
+            }
         }
 
         protected override void OnTickLaneClear()
