@@ -55,7 +55,7 @@ namespace ClayAIO.ClayScripts.Tryndamere
         {
             Circle.Draw(indianRed, E.Range, Player.Instance);
 
-            if (IsRActive())
+            if (IsRActive)
             {
                 Consolas.DrawText(null, "R Remaining: " + GetRRemainingTime().ToString("F2"), 10, 10, Color.Red);
             }
@@ -75,14 +75,17 @@ namespace ClayAIO.ClayScripts.Tryndamere
             return baseHealAmount + baseHealBonusApAmount + (healPerFuryAmount + healPerFuryBonusApAmount) * Player.Instance.Mana;
         }
 
-        public bool IsRActive()
+        public bool IsRActive
         {
-            return Player.Instance.HasBuff(R_BUFF_NAME);
+            get
+            {
+                return Player.Instance.HasBuff(R_BUFF_NAME);
+            }
         }
-
+        
         public float GetRRemainingTime()
         {
-            if (IsRActive())
+            if (IsRActive)
             {
                 return Player.Instance.GetBuff(R_BUFF_NAME).EndTime - Game.Time;
             }

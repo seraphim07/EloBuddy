@@ -83,7 +83,7 @@ namespace ClayAIO
             }
         }
 
-        public void CastSkillshotToTarget(Spell.Skillshot skillshot, Obj_AI_Base target)
+        public bool CastSkillshotToTarget(Spell.Skillshot skillshot, Obj_AI_Base target)
         {
             if (skillshot.IsReady() && target != null && target.IsValidTarget(skillshot.Range))
             {
@@ -91,9 +91,11 @@ namespace ClayAIO
 
                 if (predictionResult.HitChance >= HitChance.High)
                 {
-                    skillshot.Cast(target);
+                    return skillshot.Cast(target);
                 }
             }
+
+            return false;
         }
 
         protected Tuple<Obj_AI_Base, int> GetBestLinearCastTarget(Spell.Skillshot skillshot, IEnumerable<Obj_AI_Base> entities)

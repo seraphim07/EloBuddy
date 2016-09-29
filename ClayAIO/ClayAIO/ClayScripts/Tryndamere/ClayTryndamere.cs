@@ -28,7 +28,7 @@ namespace ClayAIO.ClayScripts
         
         protected override void OnTickPermaActive()
         {
-            if (!spellManager.IsRActive())
+            if (!spellManager.IsRActive)
             {
                 if (menuManager.PermaActiveUseQ &&
                     Player.Instance.HealthPercent <= menuManager.PermaActiveQHp)

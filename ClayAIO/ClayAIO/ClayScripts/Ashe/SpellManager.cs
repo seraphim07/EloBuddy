@@ -91,7 +91,7 @@ namespace ClayAIO.ClayScripts.Ashe
                 {
                     Spell.Skillshot.BestPosition bestPosition = GetBestConeCastPosition(W, jungleMonsters);
 
-                    if (bestPosition.HitNumber >= 1)
+                    if (bestPosition.HitNumber >= 2)
                     {
                         W.Cast(bestPosition.CastPosition);
                     }

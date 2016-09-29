@@ -44,18 +44,9 @@ namespace ClayAIO.ClayScripts.Ashe
         private void GenerateGapcloser()
         {
             Gapcloser = Main.AddSubMenu("Gapcloser", "gapcloser");
-            Gapcloser.Add("gapcloser_use_w", new CheckBox("Use W on enemy gap closer", true));
             Gapcloser.Add("gapcloser_use_r", new CheckBox("Use R on enemy gap closer", true));
         }
-
-        public bool GapcloserUseW
-        {
-            get
-            {
-                return (Gapcloser["gapcloser_use_w"] as CheckBox).CurrentValue;
-            }
-        }
-
+        
         public bool GapcloserUseR
         {
             get

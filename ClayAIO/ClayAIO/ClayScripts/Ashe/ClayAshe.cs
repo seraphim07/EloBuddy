@@ -111,16 +111,6 @@ namespace ClayAIO.ClayScripts
         {
             if (sender.IsEnemy && Player.Instance.GetAutoAttackRange() >= Player.Instance.Distance(e.End))
             {
-                if (menuManager.GapcloserUseW)
-                {
-                    spellManager.CastSkillshotToTarget(spellManager.W, sender);
-
-                    /*Core.DelayAction(delegate
-                    {
-                        spellManager.CastW(sender);
-                    }, 1000);*/
-                }
-                
                 if (menuManager.GapcloserUseR)
                 {
                     spellManager.CastSkillshotToTarget(spellManager.R, sender);
@@ -130,6 +120,8 @@ namespace ClayAIO.ClayScripts
                     }, 1000);*/
                 }
             }
+
+            base.OnGapcloser(sender, e);
         }
         
         protected override void OnInterruptableSpell(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs e)
@@ -141,6 +133,8 @@ namespace ClayAIO.ClayScripts
                     spellManager.CastSkillshotToTarget(spellManager.R, sender);
                 }
             }
+
+            base.OnInterruptableSpell(sender, e);
         }
         
         protected override void OnTickCombo()
