@@ -66,6 +66,8 @@ namespace ClayAIO.ClayScripts.Tryndamere
 
         public float GetQHealAmount()
         {
+            // return DamageLibrary.GetSpellDamage(Player.Instance, Player.Instance, SpellSlot.Q);
+
             float baseHealAmount = 20 + Q.Level * 10;
             float baseHealBonusApAmount = Player.Instance.TotalMagicalDamage * 0.3f;
 

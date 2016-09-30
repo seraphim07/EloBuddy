@@ -94,6 +94,16 @@ namespace ClayAIO.ClayScripts
                 spellManager.E.Cast();
             }
 
+            if (spellManager.IsTibber)
+            {
+                AIHeroClient target = TargetSelector.GetTarget(Player.Instance.GetAutoAttackRange(), DamageType.Magical);
+
+                if (target != null)
+                {
+                    Player.IssueOrder(GameObjectOrder.AutoAttackPet, target);
+                }
+            }
+
             base.OnTickPermaActive();
         }
 
@@ -223,21 +233,45 @@ namespace ClayAIO.ClayScripts
 
         protected override void OnTickLaneClear()
         {
+            if (menuManager.LaneClearUseQ) spellManager.CastQToMinion(autoAttackedMinion);
+
+            if (menuManager.LaneClearUseW &&
+                Player.Instance.ManaPercent >= menuManager.LaneClearWMana)
+            {
+                spellManager.CastWToMinions(menuManager.LaneClearWMinions);
+            }
+
             base.OnTickLaneClear();
         }
 
         protected override void OnTickJungleClear()
         {
+            if (menuManager.JungleClearUseQ) spellManager.CastQToJungle();
+            if (menuManager.JungleClearUseW) spellManager.CastWToJungle();
+            if (menuManager.JungleClearUseE) spellManager.E.Cast();
+
             base.OnTickJungleClear();
         }
 
         protected override void OnTickLastHit()
         {
+            if (menuManager.LastHitUseQ) spellManager.CastQToMinion(autoAttackedMinion);
+
             base.OnTickLastHit();
         }
 
         protected override void OnTickFlee()
         {
+            spellManager.E.Cast();
+
+            if (menuManager.FleeStun &&
+                spellManager.IsStunUp)
+            {
+                spellManager.CastQToHero();
+                spellManager.CastWToHero();
+                spellManager.CastRToHero();
+            }
+
             base.OnTickFlee();
         }
     }
