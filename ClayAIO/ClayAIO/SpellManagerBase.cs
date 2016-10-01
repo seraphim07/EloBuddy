@@ -128,9 +128,9 @@ namespace ClayAIO
                 HitNumber = 0
             };
 
-            for (int x = -5; x <= 5; x++)
+            for (int x = -500; x <= 500; x += 100)
             {
-                for (int y = -5; y <= 5; y++)
+                for (int y = -500; y <= 500; y += 100)
                 {
                     if (x == 0 && y == 0) continue;
 

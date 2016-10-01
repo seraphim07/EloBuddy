@@ -138,18 +138,29 @@ namespace ClayAIO
             {
                 ResolveCC(ItemId.Mercurial_Scimitar);
             }
-            
-            if (menuManagerBase.UsePotion &&
-                !Player.HasBuff("RegenerationPotion") &&
-                Player.Instance.HealthPercent <= menuManagerBase.PotionHp &&
-                Player.Instance.InventoryItems.HasItem(ItemId.Health_Potion) &&
-                !Player.Instance.IsInShopRange())
-            {
-                InventorySlot healthPotion = Player.Instance.InventoryItems.First(i => i.Id == ItemId.Health_Potion);
 
-                if (healthPotion.CanUseItem())
+            if (menuManagerBase.UsePotion &&
+                !Player.Instance.IsRecalling() &&
+                !Player.Instance.IsInShopRange() &&
+                Player.Instance.HealthPercent <= menuManagerBase.PotionHp)
+            {
+                UsePotion(ItemId.Health_Potion, "RegenerationPotion");
+                UsePotion(ItemId.Refillable_Potion, "ItemCrystalFlask");
+                UsePotion(ItemId.Hunters_Potion, "ItemCrystalFlaskJungle");
+                UsePotion(ItemId.Corrupting_Potion, "ItemDarkCrystalFlask");
+            }
+        }
+
+        private void UsePotion(ItemId potionId, string buffName)
+        {
+            if (Player.Instance.InventoryItems.HasItem(potionId) &&
+                !Player.HasBuff(buffName))
+            {
+                InventorySlot potionSlot = Player.Instance.InventoryItems.First(i => i.Id == potionId);
+
+                if (potionSlot.CanUseItem())
                 {
-                    Core.DelayAction(() => healthPotion.Cast(), 500);
+                    Core.DelayAction(() => potionSlot.Cast(), 500);
                 }
             }
         }

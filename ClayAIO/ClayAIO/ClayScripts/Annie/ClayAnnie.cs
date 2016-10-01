@@ -89,7 +89,8 @@ namespace ClayAIO.ClayScripts
             }
 
             if (menuManager.PermaActiveUseE &&
-                !spellManager.IsStunUp)
+                !spellManager.IsStunUp &&
+                !Player.Instance.IsRecalling())
             {
                 spellManager.E.Cast();
             }

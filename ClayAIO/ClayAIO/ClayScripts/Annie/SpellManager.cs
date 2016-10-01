@@ -34,7 +34,7 @@ namespace ClayAIO.ClayScripts.Annie
                 Convert.ToInt32(WData.MissileSpeed),
                 Convert.ToInt32(WData.LineWidth))
             {
-                ConeAngleDegrees = 40
+                ConeAngleDegrees = 45
             };
             
             E = new Spell.Active(SpellSlot.E);
@@ -46,7 +46,7 @@ namespace ClayAIO.ClayScripts.Annie
                 SkillShotType.Circular,
                 Convert.ToInt32(RData.CastTime * 1000f),
                 Convert.ToInt32(RData.MissileSpeed),
-                Convert.ToInt32(RData.CastRadius));
+                Convert.ToInt32(RData.CastRadius * 2f));
         }
 
         public void OnDraw(EventArgs e)
@@ -55,8 +55,8 @@ namespace ClayAIO.ClayScripts.Annie
             Circle.Draw(mediumPurple, W.Range, Player.Instance);
             Circle.Draw(darkRed, R.Range, Player.Instance);
 
-            new Geometry.Polygon.Sector(Player.Instance.ServerPosition, Game.CursorPos, (float)(W.ConeAngleDegrees * Math.PI / 180f), W.Range).Draw(System.Drawing.Color.Yellow);
-            new Geometry.Polygon.Circle(Game.CursorPos, R.Radius).Draw(System.Drawing.Color.Yellow);
+            // new Geometry.Polygon.Sector(Player.Instance.ServerPosition, Game.CursorPos, (float)(W.ConeAngleDegrees * Math.PI / 180f), W.Range).Draw(System.Drawing.Color.Yellow);
+            // new Geometry.Polygon.Circle(Game.CursorPos, R.Radius).Draw(System.Drawing.Color.Yellow);
         }
 
         public bool IsStunUp
@@ -195,7 +195,7 @@ namespace ClayAIO.ClayScripts.Annie
             {
                 Spell.Skillshot.BestPosition bestPosition = GetBestCircularCastPosition(R, EntityManager.Heroes.Enemies);
 
-                if (bestPosition.HitNumber >= 2)
+                if (bestPosition.HitNumber >= 5)
                 {
                     R.Cast(bestPosition.CastPosition);
                 }

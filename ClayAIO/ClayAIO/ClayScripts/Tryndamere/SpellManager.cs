@@ -33,7 +33,7 @@ namespace ClayAIO.ClayScripts.Tryndamere
             SpellData EData = Player.Instance.Spellbook.GetSpell(SpellSlot.E).SData;
             E = new Spell.Skillshot(
                 SpellSlot.E,
-                Convert.ToUInt32(EData.CastRange),
+                660,
                 SkillShotType.Linear,
                 Convert.ToInt32(EData.CastTime * 1000f),
                 Convert.ToInt32(EData.MissileSpeed),
@@ -59,15 +59,13 @@ namespace ClayAIO.ClayScripts.Tryndamere
             {
                 Consolas.DrawText(null, "R Remaining: " + GetRRemainingTime().ToString("F2"), 10, 10, Color.Red);
             }
-
+            
             // new Geometry.Polygon.Circle(Player.Instance.ServerPosition, W.Range).Draw(System.Drawing.Color.Yellow);
             // new Geometry.Polygon.Rectangle(Player.Instance.ServerPosition, Game.CursorPos, E.Width).Draw(System.Drawing.Color.Yellow);
         }
 
         public float GetQHealAmount()
         {
-            // return DamageLibrary.GetSpellDamage(Player.Instance, Player.Instance, SpellSlot.Q);
-
             float baseHealAmount = 20 + Q.Level * 10;
             float baseHealBonusApAmount = Player.Instance.TotalMagicalDamage * 0.3f;
 
@@ -117,12 +115,12 @@ namespace ClayAIO.ClayScripts.Tryndamere
                 List<Obj_AI_Minion> minions = EntityManager.MinionsAndMonsters.GetLaneMinions(
                     EntityManager.UnitTeam.Enemy,
                     Player.Instance.ServerPosition,
-                    E.Range).Where(minion => minion.IsEnemy).ToList();
+                    E.Range).ToList();
 
                 if (minions.Count > 0)
                 {
                     Tuple<Obj_AI_Base, int> bestTarget = GetBestLinearCastTarget(E, minions);
-
+                    
                     if (bestTarget.Item2 >= 1)
                     {
                         CastSkillshotToTarget(E, bestTarget.Item1);

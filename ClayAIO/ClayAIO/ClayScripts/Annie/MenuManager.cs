@@ -15,7 +15,15 @@ namespace ClayAIO.ClayScripts.Annie
             SkinDictionary = new Dictionary<string, int>();
             SkinDictionary.Add("Classic", 0);
             SkinDictionary.Add("Goth Annie (Limited)", 1);
-            SkinDictionary.Add("Unknown", 2);
+            SkinDictionary.Add("Red Riding Annie (Legacy)", 2);
+            SkinDictionary.Add("Annie in Wonderland (Legacy)", 3);
+            SkinDictionary.Add("Prom Queen Annie (Legacy)", 4);
+            SkinDictionary.Add("Frostfire Annie", 5);
+            SkinDictionary.Add("Reverse Annie", 6);
+            SkinDictionary.Add("FrankenTibbers Annie (Legacy)", 7);
+            SkinDictionary.Add("Panda Annie", 8);
+            SkinDictionary.Add("Sweetheart Annie", 9);
+            SkinDictionary.Add("Hextech Annie", 10);
 
             GenerateMain();
             GenerateGapcloser();
