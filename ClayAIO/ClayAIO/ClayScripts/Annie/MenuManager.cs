@@ -14,7 +14,8 @@ namespace ClayAIO.ClayScripts.Annie
         {
             SkinDictionary = new Dictionary<string, int>();
             SkinDictionary.Add("Classic", 0);
-            SkinDictionary.Add("Unknown", 1);
+            SkinDictionary.Add("Goth Annie (Limited)", 1);
+            SkinDictionary.Add("Unknown", 2);
 
             GenerateMain();
             GenerateGapcloser();
