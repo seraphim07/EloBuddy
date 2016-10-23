@@ -90,7 +90,8 @@ namespace ClayAIO.ClayScripts
 
             if (menuManager.PermaActiveUseE &&
                 !spellManager.IsStunUp &&
-                !Player.Instance.IsRecalling())
+                !Player.Instance.IsRecalling() &&
+                Player.Instance.ManaPercent >= menuManager.PermaActiveEMana)
             {
                 spellManager.E.Cast();
             }
@@ -208,9 +209,22 @@ namespace ClayAIO.ClayScripts
 
         protected override void OnTickCombo()
         {
-            if (menuManager.ComboUseQ) spellManager.CastQToHero();
-            if (menuManager.ComboUseW) spellManager.CastWToHero();
-            if (menuManager.ComboUseR) spellManager.CastRToHero();
+            if (spellManager.R.IsReady() &&
+                !spellManager.IsTibber &&
+                TargetSelector.GetTarget(spellManager.R.Range, DamageType.Magical) != null)
+            {
+                spellManager.CastRToHero();
+            }
+            else if (spellManager.W.IsReady() &&
+                TargetSelector.GetTarget(spellManager.W.Range, DamageType.Magical) != null)
+            {
+                spellManager.CastWToHero();
+            }
+            else if (spellManager.Q.IsReady() &&
+                TargetSelector.GetTarget(spellManager.Q.Range, DamageType.Magical) != null)
+            {
+                spellManager.CastQToHero();
+            }
 
             base.OnTickCombo();
         }

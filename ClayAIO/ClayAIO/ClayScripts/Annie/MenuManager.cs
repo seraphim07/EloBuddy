@@ -293,6 +293,7 @@ namespace ClayAIO.ClayScripts.Annie
         {
             PermaActive = Main.AddSubMenu("Perma Active", "perma_active");
             PermaActive.Add("perma_active_use_e", new CheckBox("Use E to stack stun", true));
+            PermaActive.Add("perma_active_e_mana", new Slider("Use E when >= mana %", 50, 0, 100));
         }
 
         public bool PermaActiveUseE
@@ -300,6 +301,14 @@ namespace ClayAIO.ClayScripts.Annie
             get
             {
                 return (PermaActive["perma_active_use_e"] as CheckBox).CurrentValue;
+            }
+        }
+
+        public int PermaActiveEMana
+        {
+            get
+            {
+                return (PermaActive["perma_active_e_mana"] as Slider).CurrentValue;
             }
         }
         #endregion
