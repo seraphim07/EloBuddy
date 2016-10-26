@@ -14,11 +14,18 @@ namespace ClayTutorial
         private static void OnLoadingComplete(EventArgs e)
         {
             Chat.OnClientSideMessage += OnClientSideMessage;
+            Game.OnNotify += OnNotify;
         }
 
         private static void OnClientSideMessage(ChatClientSideMessageEventArgs args)
         {
-            Chat.Print(args.Message);
+            Console.WriteLine(args.Message);
+        }
+
+        private static void OnNotify(GameNotifyEventArgs args)
+        {
+            Console.WriteLine(args.EventId);
+            Console.WriteLine(args.NetworkId);
         }
     }
 }
