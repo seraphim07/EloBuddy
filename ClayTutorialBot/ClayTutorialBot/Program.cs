@@ -17,9 +17,7 @@ namespace ClayTutorial
             ItemId.Infinity_Edge,
             ItemId.Lord_Dominiks_Regards
         };
-
-        static int currentItemIndex = 0;
-
+        
         static void Main(string[] args)
         {
             Loading.OnLoadingComplete += OnLoadingComplete;
@@ -29,6 +27,7 @@ namespace ClayTutorial
         {
             Core.DelayAction(() =>
             {
+                Chat.Print("Executing...");
                 Game.OnTick += OnTick;
             }, 30000);
         }
@@ -45,15 +44,17 @@ namespace ClayTutorial
                 Player.Instance.Spellbook.LevelSpell(spellSlot);
             }
 
-            Player.IssueOrder(GameObjectOrder.AttackTo, ObjectManager.Get<Obj_SpawnPoint>().FirstOrDefault(x => x.IsEnemy));
+            Player.ForceIssueOrder(GameObjectOrder.AttackTo, ObjectManager.Get<Obj_SpawnPoint>().FirstOrDefault(x => x.IsEnemy).Position, true);
         }
 
         private static void BuyItem()
         {
-            if (Shop.BuyItem(ItemBuild[currentItemIndex]))
+            foreach (ItemId item in ItemBuild)
             {
-                currentItemIndex++;
-                BuyItem();
+                if (!Player.Instance.HasItem(item))
+                {
+                    Shop.BuyItem(item);
+                }
             }
         }
     }
