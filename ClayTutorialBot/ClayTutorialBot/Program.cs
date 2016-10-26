@@ -1,11 +1,25 @@
 ﻿using EloBuddy;
+using EloBuddy.SDK;
 using EloBuddy.SDK.Events;
 using System;
+using System.Linq;
 
 namespace ClayTutorial
 {
     class Program
     {
+        static ItemId[] ItemBuild = new ItemId[]
+        {
+            ItemId.Dorans_Blade,
+            ItemId.Berserkers_Greaves,
+            ItemId.Essence_Reaver,
+            ItemId.Runaans_Hurricane,
+            ItemId.Infinity_Edge,
+            ItemId.Lord_Dominiks_Regards
+        };
+
+        static int currentItemIndex = 0;
+
         static void Main(string[] args)
         {
             Loading.OnLoadingComplete += OnLoadingComplete;
@@ -13,19 +27,34 @@ namespace ClayTutorial
 
         private static void OnLoadingComplete(EventArgs e)
         {
-            Chat.OnClientSideMessage += OnClientSideMessage;
-            Game.OnNotify += OnNotify;
+            Core.DelayAction(() =>
+            {
+                Game.OnTick += OnTick;
+            }, 30000);
         }
 
-        private static void OnClientSideMessage(ChatClientSideMessageEventArgs args)
+        private static void OnTick(EventArgs args)
         {
-            Console.WriteLine(args.Message);
+            if (Shop.CanShop)
+            {
+                BuyItem();
+            }
+
+            foreach (SpellSlot spellSlot in new SpellSlot[] { SpellSlot.Q, SpellSlot.W, SpellSlot.E, SpellSlot.R })
+            {
+                Player.Instance.Spellbook.LevelSpell(spellSlot);
+            }
+
+            Player.IssueOrder(GameObjectOrder.AttackTo, ObjectManager.Get<Obj_SpawnPoint>().FirstOrDefault(x => x.IsEnemy));
         }
 
-        private static void OnNotify(GameNotifyEventArgs args)
+        private static void BuyItem()
         {
-            Console.WriteLine(args.EventId);
-            Console.WriteLine(args.NetworkId);
+            if (Shop.BuyItem(ItemBuild[currentItemIndex]))
+            {
+                currentItemIndex++;
+                BuyItem();
+            }
         }
     }
 }
